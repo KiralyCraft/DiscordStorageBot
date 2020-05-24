@@ -1,13 +1,11 @@
 package com.kiralycraft.dsb.debug;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
 import com.kiralycraft.dsb.chunks.SingleThreadedChunkManager;
-import com.kiralycraft.dsb.filesystem.entries.DiscordFile;
+import com.kiralycraft.dsb.filesystem.entries.DiscordFolder;
+import com.kiralycraft.dsb.filesystem.entries.MetadataDiscordFile;
 
 public class Debug {
 
@@ -17,27 +15,42 @@ public class Debug {
 		FileBasedIO fbio = new FileBasedIO(9);
 		AbstractChunkManager acm = new SingleThreadedChunkManager(fbio);
 		
-		DiscordFile df = new DiscordFile(acm);
-		FileInputStream fis = new FileInputStream(new File("star.png"));
-		int len;
-		byte[] buffer = new byte[1024];
-		while((len = fis.read(buffer))>0)
-		{
-			df.write(buffer,0,len);
-		}
-		fis.close();
+//		
+		
+		MetadataDiscordFile df = new MetadataDiscordFile(acm);
+		df.setFilename("pisat.png");
+		df.writeBoolean(true);
 		df.flush();
 		
-		df.seek(0);
-		
-		System.out.println(df.length());
-		
-		FileOutputStream fos = new FileOutputStream(new File("star2.png"));
-		while((len = df.read(buffer))>0)
+		DiscordFolder discoFolder = new DiscordFolder(acm);
+		discoFolder.addFile(df);
+//		
+		for (MetadataDiscordFile mdf:discoFolder.listFiles())
 		{
-			fos.write(buffer,0,len);
+			System.out.println(mdf.getFilename());
 		}
-		fos.close();
+//		df.writeBoolean(true);
+//		System.out.println(df.readBoolean());
+//		FileInputStream fis = new FileInputStream(new File("star.png"));
+//		int len;
+//		byte[] buffer = new byte[1024];
+//		while((len = fis.read(buffer))>0)
+//		{
+//			df.write(buffer,0,len);
+//		}
+//		fis.close();
+//		df.flush();
+//		
+//		df.seek(0);
+//		
+//		System.out.println(df.length());
+//		
+//		FileOutputStream fos = new FileOutputStream(new File("star2.png"));
+//		while((len = df.read(buffer))>0)
+//		{
+//			fos.write(buffer,0,len);
+//		}
+//		fos.close();
 		
 //		FileAllocationTable fat = new FileAllocationTable(acm);
 //		tfs.buildEntry(fat);

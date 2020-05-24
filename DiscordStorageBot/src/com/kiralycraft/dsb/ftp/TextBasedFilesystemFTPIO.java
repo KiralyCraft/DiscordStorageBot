@@ -1,20 +1,20 @@
 package com.kiralycraft.dsb.ftp;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import com.guichaguri.minimalftp.api.IFileSystem;
+import com.kiralycraft.dsb.chunks.AbstractChunkManager;
 
 public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 {
 	private String cwd;
-	private final String PSEUDOROOT = "/.";
+	private final String FOLDER_INDICATOR = "/.";
 	
-	public TextBasedFilesystemFTPIO()
+	
+	public TextBasedFilesystemFTPIO(AbstractChunkManager acm)
 	{
 		cwd = getRoot();
 	}
@@ -22,13 +22,14 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 	@Override
 	public String getRoot()
 	{
-		return "";
+		return "Discord";
 	}
 
 	@Override
 	public String getPath(String file)
 	{
-		String thePath = URI.create(getRoot()).relativize(URI.create(file)).getPath();
+		
+		String thePath = URI.create(file).relativize(URI.create(getRoot())).getPath();
 		if (thePath.isEmpty())
 		{
 			return file;
@@ -49,7 +50,7 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 	@Override
 	public boolean isDirectory(String file)
 	{
-		if (file.equals(PSEUDOROOT))
+		if (file.equals(getRoot()))
 		{
 			return true;
 		}
@@ -112,20 +113,21 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 	@Override
 	public String getParent(String file) throws IOException
 	{
-		// TODO Auto-generated method stub
+		System.out.println("parent "+file);
 		return null;
 	}
 
 	@Override
 	public String[] listFiles(String dir) throws IOException
 	{
-		return new String[] {"/pisat"};
+		System.out.println("list "+dir);
+		return new String[] {"/pisatf"};
 	}
 
 	@Override
 	public String findFile(String path) throws IOException
 	{
-		
+		System.out.println("Find "+path);
 		return null;
 	}
 

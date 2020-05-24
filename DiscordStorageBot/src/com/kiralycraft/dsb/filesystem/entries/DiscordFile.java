@@ -1,15 +1,14 @@
 package com.kiralycraft.dsb.filesystem.entries;
 
-import java.io.FileNotFoundException;
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
 import com.kiralycraft.dsb.entities.Chunk;
 import com.kiralycraft.dsb.entities.EntityID;
-import com.kiralycraft.dsb.log.Logger;
 
-public class DiscordFile extends RandomAccessFile
+public class DiscordFile
 {
 	private int posInCurrentChunk;
 	private long passedChunks = 0;
@@ -21,20 +20,18 @@ public class DiscordFile extends RandomAccessFile
 	private Chunk baseChunk;
 	private AbstractChunkManager acm;
 
-	public DiscordFile(AbstractChunkManager acm) throws FileNotFoundException
+	public DiscordFile(AbstractChunkManager acm) 
 	{
-		super("./f.txt", "rw");
 		this.acm = acm;
 		this.posInCurrentChunk = Chunk.getDataOffset();
 		this.baseChunk = acm.allocateChunk();
 		this.currentChunk = acm.allocateChunk();
 		this.baseChunk.setNext(this.currentChunk.getID());	
-		acm.flushChunk(baseChunk);
+		flushBaseChunk();
 	}
 
-	public DiscordFile(AbstractChunkManager acm, EntityID baseID) throws FileNotFoundException
+	public DiscordFile(AbstractChunkManager acm, EntityID baseID) 
 	{
-		super("./f.txt", "rw");
 		this.acm = acm;
 		this.posInCurrentChunk = Chunk.getDataOffset();
 		this.baseChunk = acm.getChunk(baseID);
@@ -46,7 +43,7 @@ public class DiscordFile extends RandomAccessFile
 	{
 		return acm.getMaxChunkByteSize() - Chunk.getDataOffset();
 	}
-	@Override
+	
 	public int read()
 	{
 		boolean isEOF = (currentChunk.getNext() == null && posInCurrentChunk == acm.getMaxChunkByteSize()) || getErrorlessFilePointer()==length;
@@ -74,8 +71,8 @@ public class DiscordFile extends RandomAccessFile
 		}
 	}
 
-	@Override
-	public void write(int b) throws IOException
+	
+	public void write(int b) 
 	{
 		this.length = Math.max(length, passedChunks * getMaxChunkBytesExcludingMeta() + posInCurrentChunk);
 		this.currentChunkTainted = true;
@@ -121,14 +118,14 @@ public class DiscordFile extends RandomAccessFile
 	{
 		return passedChunks * getMaxChunkBytesExcludingMeta() + (posInCurrentChunk-Chunk.getDataOffset());
 	}
-	@Override
-	public long getFilePointer() throws IOException
+	
+	public long getFilePointer() 
 	{
 		return getErrorlessFilePointer();
 	}
 
-	@Override
-	public void seek(long pos) throws IOException
+	
+	public void seek(long pos) 
 	{
 		long oldPassedChunks = passedChunks;
 		passedChunks = pos / getMaxChunkBytesExcludingMeta();
@@ -151,8 +148,8 @@ public class DiscordFile extends RandomAccessFile
 		}
 	}
 
-	@Override
-	public int read(byte[] b, int off, int len) throws IOException
+	
+	public int read(byte[] b, int off, int len) 
 	{
 		if (b == null)
 		{
@@ -185,20 +182,20 @@ public class DiscordFile extends RandomAccessFile
 		return i;
 	}
 
-	@Override
-	public int read(byte[] b) throws IOException
+	
+	public int read(byte[] b) 
 	{
 		return read(b, 0, b.length);
 	}
 
-	@Override
-	public void write(byte[] b) throws IOException
+	
+	public void write(byte[] b) 
 	{
 		write(b, 0, b.length);
 	}
 
-	@Override
-	public void write(byte[] b, int off, int len) throws IOException
+	
+	public void write(byte[] b, int off, int len) 
 	{
 		
 		if (off < 0 || len < 0 || off + len > b.length)
@@ -208,24 +205,25 @@ public class DiscordFile extends RandomAccessFile
 		
 	}
 
-	@Override
-	public long length() throws IOException
+	
+	public long length() 
 	{
 		return length;
 	}
 
-	@Override
-	public void setLength(long newLength) throws IOException
+	
+	public void setLength(long newLength) 
 	{
+		length = newLength;
 		baseChunk.setLong(Chunk.getDataOffset(), newLength);
-		acm.flushChunk(baseChunk);
+		flushBaseChunk();
 	}
 
 	public boolean flush()
 	{
 		if (currentChunkTainted)
 		{
-			acm.flushChunk(baseChunk);
+			flushBaseChunk();
 			
 			boolean flushResult = acm.flushChunk(currentChunk);
 			if (flushResult)
@@ -235,5 +233,19 @@ public class DiscordFile extends RandomAccessFile
 			return flushResult;
 		}
 		return true;
+	}
+
+	/**
+	 * Returns the base {@link Chunk} of this file. It usually contains metadata.
+	 * @return
+	 */
+	protected Chunk getBaseChunk()
+	{
+		return baseChunk;
+	}
+	
+	protected void flushBaseChunk()
+	{
+		acm.flushChunk(baseChunk);
 	}
 }
