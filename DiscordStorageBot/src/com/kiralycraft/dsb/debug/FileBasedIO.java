@@ -17,8 +17,9 @@ public class FileBasedIO implements FileIOInterface
 {
 	private File baseFolder;
 	private int currentChunk = 0;
-	public FileBasedIO()
+	public FileBasedIO(int i)
 	{
+		this.currentChunk = i;
 		this.baseFolder = new File("data");
 		this.baseFolder.mkdir();
 	}

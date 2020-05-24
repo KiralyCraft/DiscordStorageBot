@@ -1,6 +1,7 @@
 package com.kiralycraft.dsb.filesystem.entries;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
 import com.kiralycraft.dsb.entities.Chunk;
@@ -9,7 +10,7 @@ import com.kiralycraft.dsb.exceptions.ChunkOffsetException;
 
 public abstract class AbstractFilesystemEntry
 {
-	private ArrayList<EntityID> containedChunks;
+	private List<EntityID> containedChunks;
 	private AbstractChunkManager acm;
 	
 	public AbstractFilesystemEntry(AbstractChunkManager acm)
@@ -47,9 +48,13 @@ public abstract class AbstractFilesystemEntry
 		}
 	}
 	
-	protected void putByteArray(byte[] theArray,long offset) throws ChunkOffsetException
+	protected void putByteArray(long offset,byte[] theArray) throws ChunkOffsetException
 	{
-		int bytesLeftToWrite = theArray.length;
+		this.putByteArray(offset, theArray, -1);
+	}
+	protected void putByteArray(long offset,byte[] theArray, int length) throws ChunkOffsetException
+	{
+		int bytesLeftToWrite = length==-1?theArray.length:length;
 		
 		int offsetInsideChunk = (int) (offset%acm.getMaxChunkByteSize());
 		if (bytesLeftToWrite + offsetInsideChunk < acm.getMaxChunkByteSize()) //If we can fit the data in this remaining chunk
@@ -109,6 +114,11 @@ public abstract class AbstractFilesystemEntry
 			byte[] chunkData = acm.getChunk(chunkID).getChunkData();
 			
 			System.arraycopy(chunkData, 0, toReturn, 0, bytesLeftToRead);
+			
+			for (int i=0;i<20;i++)
+			{
+				System.out.println(chunkData[i]);
+			}
 		}
 		else
 		{
@@ -149,11 +159,16 @@ public abstract class AbstractFilesystemEntry
 		return toReturn;
 	}
 
-	public void setAllocatedChunks(ArrayList<EntityID> allocatedChunks)
+	public void setAllocatedChunks(List<EntityID> allocatedChunks)
 	{
 		this.containedChunks = allocatedChunks;		
 	}
-
+	
+	public EntityID getFirstChunkAddress()
+	{
+		return containedChunks.get(0);
+	}
+	
 	/**
 	 * All entries should have a basic creation method, that initializes their data.
 	 * Returns false if anything went wrong.
@@ -164,7 +179,7 @@ public abstract class AbstractFilesystemEntry
 	 * Returns the contained {@link EntityID}s corresponding to the chunks.
 	 * @return
 	 */
-	public ArrayList<EntityID> getContainedChunks()
+	public List<EntityID> getContainedChunks()
 	{
 		return containedChunks;
 	}

@@ -1,22 +1,44 @@
 package com.kiralycraft.dsb.filesystem;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
 import com.kiralycraft.dsb.entities.EntityID;
-import com.kiralycraft.dsb.exceptions.ChunkIOException;
 import com.kiralycraft.dsb.filesystem.entries.AbstractFilesystemEntry;
+import com.kiralycraft.dsb.filesystem.entries.FileAllocationTable;
 import com.kiralycraft.dsb.log.Logger;
 
 public class TextFileSystem
 {
+	private FileAllocationTable fat;
 	private AbstractChunkManager acm;
 
-	public TextFileSystem(AbstractChunkManager acm)
+	/**
+	 * Supply a null {@link FileAllocationTable} address to create a new one.
+	 * @param acm
+	 * @param fatAddress
+	 */
+	public TextFileSystem(AbstractChunkManager acm,List<EntityID> fatAddresses)
 	{
 		this.acm = acm;
+		fat = new FileAllocationTable(acm);
+		
+		if (fatAddresses == null)
+		{
+			Logger.log("Creating new FAT");
+			buildEntry(fat);
+			flushEntry(fat);
+		}
+		else
+		{
+			Logger.log("Using existing FAT");
+			fat.setAllocatedChunks(fatAddresses);
+		}
 	}
+	
+		
 	
 	private boolean allocateEntry(AbstractFilesystemEntry afe)
 	{
@@ -67,5 +89,10 @@ public class TextFileSystem
 			}
 		}
 		return true;
+	}
+
+	public FileAllocationTable getFAT()
+	{
+		return fat;		
 	}
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import com.kiralycraft.dsb.entities.Chunk;
@@ -29,6 +30,7 @@ public abstract class AbstractChunkManager
 	{
 		boolean dirty;
 		Chunk theChunk;
+		long lastAccessed;
 	}
 	
 	private FileIOInterface fioi;
@@ -82,6 +84,8 @@ public abstract class AbstractChunkManager
 	 */
 	private CachedChunk getChunkFromCache(EntityID id) throws IOException
 	{
+		cleanupCache();
+		
 		CachedChunk foundChunk;
 		if ((foundChunk = cachedChunks.get(id))==null)
 		{
@@ -97,13 +101,36 @@ public abstract class AbstractChunkManager
 			CachedChunk toReturn = new CachedChunk();
 			toReturn.dirty = false;
 			toReturn.theChunk = theChunk;
+			toReturn.lastAccessed = System.currentTimeMillis();
 			cachedChunks.put(id, toReturn);
 			
 			return toReturn;
 		}
 		else
 		{
+			foundChunk.lastAccessed = System.currentTimeMillis();
 			return foundChunk;
+		}
+	}
+
+	/**
+	 * This method is used to clean the cache
+	 */
+	private void cleanupCache()
+	{
+		ArrayList<EntityID> itemsToClear = new ArrayList<EntityID>();
+		for (Entry<EntityID, CachedChunk> cachedChunk:cachedChunks.entrySet())
+		{
+			CachedChunk cc = cachedChunk.getValue();
+			if (System.currentTimeMillis() - cc.lastAccessed > 0 && !cc.dirty)
+			{
+				itemsToClear.add(cachedChunk.getKey());
+			}
+		}
+		
+		for (EntityID eid:itemsToClear)
+		{
+			cachedChunks.remove(eid);
 		}
 	}
 
