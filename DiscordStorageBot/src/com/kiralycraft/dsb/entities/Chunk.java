@@ -30,5 +30,10 @@ public class Chunk
 	{
 		this.chunkData = chunkData;
 	}
+
+	public void setByte(int i, byte b)
+	{
+		chunkData[i] = b;
+	}
 	
 }

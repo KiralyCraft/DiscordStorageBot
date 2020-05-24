@@ -35,14 +35,24 @@ public interface FileIOInterface
 	 * 
 	 * It is expected for this method to block.
 	 * 
-	 * If, for some reason, the underlying EntityID was updated, it should also return a new ID for the given chunk.
-	 * Otherwise, it should return null.
+	 * Returns false if anything goes wrong.
 	 * 
 	 * WARNING: If anything goes wrong, this method should throw an {@link IOException} with details.
 	 * @param eid
 	 * @return
 	 */
-	public EntityID updateRawChunkData(EntityID eid,String newData) throws IOException;
+	public boolean updateRawChunkData(EntityID eid,String newData) throws IOException;
+	
+	/**
+	 * This method should create a new chunk, and return the associated {@link EntityID}
+	 * 
+	 * It is expected for this method to block.
+	 * 
+	 * WARNING: If anything goes wrong, this method should throw an {@link IOException} with details.
+	 * @param eid
+	 * @return
+	 */
+	public EntityID createEmptyChunk() throws IOException;
 	
 	/**
 	 * This method should check if an entity exists, using the provided {@link EntityID}.

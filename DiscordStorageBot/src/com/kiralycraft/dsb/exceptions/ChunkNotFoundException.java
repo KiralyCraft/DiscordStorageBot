@@ -18,7 +18,7 @@ public class ChunkNotFoundException extends FileNotFoundException
 	@Override
 	public String getMessage() 
 	{
-		return "The requested chunk operation regarding EntityID: \""+eid.getLoggableID()+"\" has failed because: "+super.getMessage();
+		return "Chunk with EntityID: \""+eid.getLoggableID()+"\" does not exist! Details: "+super.getMessage();
 	}
 
 }

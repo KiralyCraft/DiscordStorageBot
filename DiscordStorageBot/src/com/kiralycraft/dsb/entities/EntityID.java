@@ -1,5 +1,7 @@
 package com.kiralycraft.dsb.entities;
 
+import java.util.Arrays;
+
 /**
  * A keystroke-friendly ID system.
  * @author KiralyCraft
@@ -35,5 +37,45 @@ public class EntityID
 	public String getLoggableID() 
 	{
 		return "EntityID{bid="+id[0]+",sectionID="+id[1]+",entityID="+id[2]+"}";
+	}
+	
+	public long getBaseID()
+	{
+		return id[0];
+	}
+	
+	public long getSectionID()
+	{
+		return id[1];
+	}
+	
+	public long getEntityID()
+	{
+		return id[2];
+	}
+	
+	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(id);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EntityID other = (EntityID) obj;
+		if (!Arrays.equals(id, other.id))
+			return false;
+		return true;
 	}
 }
