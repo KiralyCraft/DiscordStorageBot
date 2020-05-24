@@ -1,15 +1,10 @@
 package com.kiralycraft.dsb.debug;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
 import com.kiralycraft.dsb.chunks.SingleThreadedChunkManager;
-import com.kiralycraft.dsb.entities.EntityID;
-import com.kiralycraft.dsb.filesystem.HighLevelTextFS;
-import com.kiralycraft.dsb.filesystem.TextFileSystem;
+import com.kiralycraft.dsb.filesystem.entries.DiscordFile;
 
 public class Debug {
 
@@ -19,15 +14,14 @@ public class Debug {
 		FileBasedIO fbio = new FileBasedIO(9);
 		AbstractChunkManager acm = new SingleThreadedChunkManager(fbio);
 		
-		List<EntityID> fatAddresses = new ArrayList<EntityID>();
-		for (int i=0;i<=8;i++)
+		DiscordFile df = new DiscordFile(acm);
+		for (int i=1;i<=1000;i++)
 		{
-			fatAddresses.add(new EntityID(i));
+			df.writeUTF("pisat");
 		}
-		TextFileSystem tfs = new TextFileSystem(acm,fatAddresses);
-		HighLevelTextFS hltf = new HighLevelTextFS(tfs, acm);
-	
-		hltf.addFile(new File("star.png"), "/");
+//		df.seek(0);
+		System.out.println(df.readUTF());
+		df.flush();
 		
 //		FileAllocationTable fat = new FileAllocationTable(acm);
 //		tfs.buildEntry(fat);
