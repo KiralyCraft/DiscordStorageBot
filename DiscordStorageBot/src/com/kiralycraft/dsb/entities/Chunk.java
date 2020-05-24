@@ -79,8 +79,8 @@ public class Chunk
 		else
 		{
 			setLong(i*8,id.getBaseID());
-			setLong((i+1),id.getSectionID());
-			setLong((i+2),id.getEntityID());
+			setLong((i+1)*8,id.getSectionID());
+			setLong((i+2)*8,id.getEntityID());
 		}
 	}
 

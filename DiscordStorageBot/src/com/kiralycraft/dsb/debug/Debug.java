@@ -1,5 +1,8 @@
 package com.kiralycraft.dsb.debug;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
@@ -15,13 +18,24 @@ public class Debug {
 		AbstractChunkManager acm = new SingleThreadedChunkManager(fbio);
 		
 		DiscordFile df = new DiscordFile(acm);
-		for (int i=1;i<=1000;i++)
+		FileInputStream fis = new FileInputStream(new File("star.png"));
+		int len;
+		byte[] buffer = new byte[1024];
+		while((len = fis.read(buffer))>0)
 		{
-			df.writeUTF("pisat");
+			df.write(buffer,0,len);
 		}
-//		df.seek(0);
-		System.out.println(df.readUTF());
+		fis.close();
 		df.flush();
+		
+		df.seek(0);
+		
+		FileOutputStream fos = new FileOutputStream(new File("star2.png"));
+		while((len = df.read(buffer))>0)
+		{
+			fos.write(buffer,0,len);
+		}
+		fos.close();
 		
 //		FileAllocationTable fat = new FileAllocationTable(acm);
 //		tfs.buildEntry(fat);

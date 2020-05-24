@@ -7,6 +7,7 @@ import java.io.RandomAccessFile;
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
 import com.kiralycraft.dsb.entities.Chunk;
 import com.kiralycraft.dsb.entities.EntityID;
+import com.kiralycraft.dsb.log.Logger;
 
 public class DiscordFile extends RandomAccessFile
 {
@@ -14,7 +15,8 @@ public class DiscordFile extends RandomAccessFile
 	private long passedChunks = 0;
 	
 	private boolean currentChunkTainted;
-
+	private long length;
+	
 	private Chunk currentChunk;
 	private Chunk baseChunk;
 	private AbstractChunkManager acm;
@@ -26,7 +28,7 @@ public class DiscordFile extends RandomAccessFile
 		this.posInCurrentChunk = Chunk.getDataOffset();
 		this.baseChunk = acm.allocateChunk();
 		this.currentChunk = acm.allocateChunk();
-		this.baseChunk.setNext(this.currentChunk.getID());
+		this.baseChunk.setNext(this.currentChunk.getID());	
 		acm.flushChunk(baseChunk);
 	}
 
@@ -35,7 +37,7 @@ public class DiscordFile extends RandomAccessFile
 		super("./f.txt", "rw");
 		this.acm = acm;
 		this.posInCurrentChunk = Chunk.getDataOffset();
-		this.baseChunk = acm.allocateChunk();
+		this.baseChunk = acm.getChunk(baseID);
 		this.currentChunk = acm.getChunk(baseChunk.getNext());
 	}
 
@@ -57,7 +59,7 @@ public class DiscordFile extends RandomAccessFile
 			}
 			posInCurrentChunk++;
 
-			if (posInCurrentChunk >= getMaxChunkBytesExcludingMeta())
+			if (posInCurrentChunk >= acm.getMaxChunkByteSize())
 			{
 				currentChunk = acm.getChunk(currentChunk.getNext());
 				passedChunks++;
@@ -86,8 +88,13 @@ public class DiscordFile extends RandomAccessFile
 			{
 				Chunk newChunk = acm.allocateChunk();
 				currentChunk.setNext(newChunk.getID());
+				newChunk.setPrevious(currentChunk.getID());
+				acm.flushChunk(currentChunk);
+				acm.flushChunk(newChunk);
+				
 				currentChunk = newChunk;
-			} else
+			} 
+			else
 			{
 				currentChunk = acm.getChunk(nextChunk);
 			}

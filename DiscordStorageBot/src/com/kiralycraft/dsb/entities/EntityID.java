@@ -78,4 +78,10 @@ public class EntityID
 			return false;
 		return true;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return this.getLoggableID();
+	}
 }
