@@ -39,6 +39,7 @@ public class DiscordFile extends RandomAccessFile
 		this.posInCurrentChunk = Chunk.getDataOffset();
 		this.baseChunk = acm.getChunk(baseID);
 		this.currentChunk = acm.getChunk(baseChunk.getNext());
+		this.length = baseChunk.getLong(Chunk.getDataOffset());
 	}
 
 	private int getMaxChunkBytesExcludingMeta()
@@ -48,7 +49,7 @@ public class DiscordFile extends RandomAccessFile
 	@Override
 	public int read()
 	{
-		boolean isEOF = currentChunk.getNext() == null && posInCurrentChunk == acm.getMaxChunkByteSize();
+		boolean isEOF = (currentChunk.getNext() == null && posInCurrentChunk == acm.getMaxChunkByteSize()) || getErrorlessFilePointer()==length;
 		if (!isEOF) // If a previous read returned a number of bytes, and the EOF is reached, this
 					// method WILL be called again
 		{
@@ -76,37 +77,54 @@ public class DiscordFile extends RandomAccessFile
 	@Override
 	public void write(int b) throws IOException
 	{
+		this.length = Math.max(length, passedChunks * getMaxChunkBytesExcludingMeta() + posInCurrentChunk);
 		this.currentChunkTainted = true;
 		this.currentChunk.getChunkData()[posInCurrentChunk] = (byte) b;
 		posInCurrentChunk++;
 		if (posInCurrentChunk >= acm.getMaxChunkByteSize())
 		{
 			flush();
-			EntityID nextChunk = currentChunk.getNext();
-
-			if (nextChunk == null)
-			{
-				Chunk newChunk = acm.allocateChunk();
-				currentChunk.setNext(newChunk.getID());
-				newChunk.setPrevious(currentChunk.getID());
-				acm.flushChunk(currentChunk);
-				acm.flushChunk(newChunk);
-				
-				currentChunk = newChunk;
-			} 
-			else
-			{
-				currentChunk = acm.getChunk(nextChunk);
-			}
+			moveToNextChunk();
 			passedChunks++;
 			posInCurrentChunk = Chunk.getDataOffset();
 		}
 	}
 
+	/**
+	 * This helper method moves to the next {@link Chunk}, and if it does not exist, it creates it.
+	 */
+	private void moveToNextChunk()
+	{
+		EntityID nextChunk = currentChunk.getNext();
+
+		if (nextChunk == null)
+		{
+			Chunk newChunk = acm.allocateChunk();
+			currentChunk.setNext(newChunk.getID());
+			newChunk.setPrevious(currentChunk.getID());
+			acm.flushChunk(currentChunk);
+			acm.flushChunk(newChunk);
+			
+			currentChunk = newChunk;
+		} 
+		else
+		{
+			currentChunk = acm.getChunk(nextChunk);
+		}
+	}
+	/**
+	 * Helper method for fetching the current position.
+	 * @return
+	 */
+	
+	private long getErrorlessFilePointer()
+	{
+		return passedChunks * getMaxChunkBytesExcludingMeta() + (posInCurrentChunk-Chunk.getDataOffset());
+	}
 	@Override
 	public long getFilePointer() throws IOException
 	{
-		return passedChunks * getMaxChunkBytesExcludingMeta() + posInCurrentChunk;
+		return getErrorlessFilePointer();
 	}
 
 	@Override
@@ -122,7 +140,7 @@ public class DiscordFile extends RandomAccessFile
 		{
 			for (int i = 0; i < (passedChunks - oldPassedChunks); i++)
 			{
-				currentChunk = acm.getChunk(currentChunk.getNext());
+				moveToNextChunk();
 			}
 		} else
 		{
@@ -193,20 +211,22 @@ public class DiscordFile extends RandomAccessFile
 	@Override
 	public long length() throws IOException
 	{
-		return baseChunk.getLong(Chunk.getDataOffset());
+		return length;
 	}
 
 	@Override
 	public void setLength(long newLength) throws IOException
 	{
 		baseChunk.setLong(Chunk.getDataOffset(), newLength);
-		acm.flushChunk(currentChunk);
+		acm.flushChunk(baseChunk);
 	}
 
 	public boolean flush()
 	{
 		if (currentChunkTainted)
 		{
+			acm.flushChunk(baseChunk);
+			
 			boolean flushResult = acm.flushChunk(currentChunk);
 			if (flushResult)
 			{

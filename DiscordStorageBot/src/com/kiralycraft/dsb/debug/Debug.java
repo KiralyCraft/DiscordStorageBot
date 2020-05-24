@@ -30,6 +30,8 @@ public class Debug {
 		
 		df.seek(0);
 		
+		System.out.println(df.length());
+		
 		FileOutputStream fos = new FileOutputStream(new File("star2.png"));
 		while((len = df.read(buffer))>0)
 		{
