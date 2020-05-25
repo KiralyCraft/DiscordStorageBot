@@ -103,4 +103,12 @@ public class MetadataDiscordFile extends AbstractDataDiscordFile
 		}
 		chunkData[lastByteIndex+1] = 0;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "MetadataDiscordFile [getFilename()=" + getFilename() + ", isFolder()=" + isFolder()
+				+ ", getLastModified()=" + getLastModified() + ", length()=" + length() + ", getBaseChunk().ID()="
+				+ getBaseChunk().getID() + "]";
+	}
 }

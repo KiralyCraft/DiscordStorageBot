@@ -7,26 +7,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.security.SecureRandom;
 
 import com.kiralycraft.dsb.entities.EntityID;
 import com.kiralycraft.dsb.exceptions.ChunkNotFoundException;
 import com.kiralycraft.dsb.filesystem.FileIOInterface;
+import com.kiralycraft.dsb.filesystem.entries.DiscordFolder;
 
 public class FileBasedIO implements FileIOInterface
 {
 	private File baseFolder;
 	private int currentChunk = 0;
-	public FileBasedIO(int i)
+	public FileBasedIO()
 	{
-		this.currentChunk = i;
 		this.baseFolder = new File("data");
 		this.baseFolder.mkdir();
+		this.currentChunk = baseFolder.list().length;
 	}
 	@Override
 	public int getChunkSize() 
 	{
-		return 2000;
+		return 6000;
 	}
 
 	@Override

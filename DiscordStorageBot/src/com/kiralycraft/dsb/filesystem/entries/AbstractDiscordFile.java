@@ -59,7 +59,7 @@ public abstract class AbstractDiscordFile
 	
 	public int read()
 	{
-		boolean isEOF = (currentChunk.getNext() == null && posInCurrentChunk == acm.getMaxChunkByteSize()) || getErrorlessFilePointer()==length;
+		boolean isEOF = (currentChunk.getNext() == null && posInCurrentChunk == acm.getMaxChunkByteSize()) || getErrorlessFilePointer()==length();
 		if (!isEOF) // If a previous read returned a number of bytes, and the EOF is reached, this
 					// method WILL be called again
 		{
@@ -87,12 +87,13 @@ public abstract class AbstractDiscordFile
 	
 	public void write(int b) 
 	{
-		this.length = Math.max(length, passedChunks * getMaxChunkBytesExcludingMeta() + posInCurrentChunk);
+		setLength(Math.max(length, passedChunks * getMaxChunkBytesExcludingMeta() + posInCurrentChunk));
 		this.currentChunkTainted = true;
 		this.currentChunk.getChunkData()[posInCurrentChunk] = (byte) b;
 		posInCurrentChunk++;
 		if (posInCurrentChunk >= acm.getMaxChunkByteSize())
 		{
+			flushBaseChunk(); //To update the length
 			flush();
 			moveToNextChunk();
 			passedChunks++;
@@ -221,10 +222,13 @@ public abstract class AbstractDiscordFile
 	
 	public long length() 
 	{
-		return length;
+		return length-Chunk.getDataOffset()+1;
 	}
 
-	
+	/**
+	 * Sets the new length. Does not flush the chunk!
+	 * @param newLength
+	 */
 	public void setLength(long newLength) 
 	{
 		length = newLength;
@@ -233,6 +237,7 @@ public abstract class AbstractDiscordFile
 
 	public boolean flush()
 	{
+		flushBaseChunk();
 		if (currentChunkTainted)
 		{			
 			boolean flushResult = acm.flushChunk(currentChunk);
@@ -254,8 +259,16 @@ public abstract class AbstractDiscordFile
 		return baseChunk;
 	}
 	
+	public EntityID getID()
+	{
+		return getBaseChunk().getID();
+	}
 	protected void flushBaseChunk()
 	{
 		acm.flushChunk(baseChunk);
+	}
+	protected AbstractChunkManager getACM()
+	{
+		return acm;
 	}
 }

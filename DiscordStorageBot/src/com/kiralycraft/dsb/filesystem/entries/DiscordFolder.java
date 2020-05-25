@@ -1,24 +1,18 @@
 package com.kiralycraft.dsb.filesystem.entries;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
-import com.kiralycraft.dsb.entities.Chunk;
 import com.kiralycraft.dsb.entities.EntityID;
 import com.kiralycraft.dsb.log.Logger;
 
 public class DiscordFolder extends MetadataDiscordFile
 {
-	
-	private AbstractChunkManager acm;
-
 	public DiscordFolder(AbstractChunkManager acm,String filename)
 	{
 		super(acm, filename, true, 6000);
-		this.acm = acm;
 	}
 	
 	public DiscordFolder(AbstractChunkManager acm, EntityID entityID)
@@ -61,7 +55,7 @@ public class DiscordFolder extends MetadataDiscordFile
 				long baseID = readLong();
 				long sectionID = readLong();
 				long entityID = readLong();
-				MetadataDiscordFile mdf = new MetadataDiscordFile(acm, new EntityID(baseID,sectionID,entityID)); //Load the file 
+				MetadataDiscordFile mdf = new MetadataDiscordFile(getACM(), new EntityID(baseID,sectionID,entityID)); //Load the file 
 				fileList.add(mdf);
 			}
 			return fileList;
@@ -71,5 +65,16 @@ public class DiscordFolder extends MetadataDiscordFile
 			Logger.log(e,Level.SEVERE);
 			return null;
 		} 
+	}
+
+	/**
+	 * Converts a MDF to a DiscordFolder. This does, sadly, re-read the file.
+	 * @param acm
+	 * @param mdf
+	 * @return
+	 */
+	public static DiscordFolder fromMDF(AbstractChunkManager acm,MetadataDiscordFile mdf)
+	{
+		return new DiscordFolder(acm,mdf.getBaseChunk().getID());
 	}
 }

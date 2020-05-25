@@ -83,7 +83,6 @@ public abstract class AbstractChunkManager
 	{
 		try
 		{			
-			EntityID chunkID = chunk.getID();
 			byte[] chunkByteData = chunk.getChunkData();
 			
 			String chunkData = Base64.getEncoder().encodeToString(chunkByteData);
@@ -142,14 +141,22 @@ public abstract class AbstractChunkManager
 		try
 		{
 			EntityID chunkID = fioi.createEmptyChunk();
-			return new Chunk(chunkID, new byte[getMaxChunkByteSize()]);
+			Chunk toReturn = new Chunk(chunkID, new byte[getMaxChunkByteSize()]);
+			if (flushChunk(toReturn))
+			{
+				return toReturn;
+			}
+			else
+			{
+				throw new IOException("Could not flush the newly created Chunk with ID: "+chunkID);
+			}
 		}
 		catch(IOException e)
 		{
 			Logger.log(this.getClass().getSimpleName()+" encountered an issue when trying to create an empty Chunk!",Level.SEVERE);
 			Logger.log(e,Level.SEVERE);
-			return null;
 		}
+		return null;
 	}
 	
 	/**
