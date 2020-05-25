@@ -4,19 +4,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.ArrayList;
 
 import com.guichaguri.minimalftp.api.IFileSystem;
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
+import com.kiralycraft.dsb.entities.EntityID;
+import com.kiralycraft.dsb.filesystem.entries.DiscordFolder;
+import com.kiralycraft.dsb.filesystem.entries.MetadataDiscordFile;
 
 public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 {
 	private String cwd;
 	private final String FOLDER_INDICATOR = "/.";
-	
+	private DiscordFolder currentFolder;
+	private AbstractChunkManager acm;
 	
 	public TextBasedFilesystemFTPIO(AbstractChunkManager acm)
 	{
 		cwd = getRoot();
+		this.acm = acm;
+		this.currentFolder = new DiscordFolder(acm,new EntityID(9));
+		this.currentFolder.setFilename(getRoot());
+		this.currentFolder.setLastModified(System.currentTimeMillis());
+		this.currentFolder.setLength(2048);
+		this.currentFolder.flush();
 	}
 	
 	@Override
@@ -29,7 +40,7 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 	public String getPath(String file)
 	{
 		
-		String thePath = URI.create(file).relativize(URI.create(getRoot())).getPath();
+		String thePath = URI.create(getRoot()).relativize(URI.create(file)).getPath();
 		if (thePath.isEmpty())
 		{
 			return file;
@@ -50,7 +61,8 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 	@Override
 	public boolean isDirectory(String file)
 	{
-		if (file.equals(getRoot()))
+		System.out.println(file);
+		if (file.equals(getRoot()+FOLDER_INDICATOR))
 		{
 			return true;
 		}
@@ -60,9 +72,7 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 	@Override
 	public int getPermissions(String file)
 	{
-		System.out.println("perms "+file);
-
-		return 0;
+		return 777;
 	}
 
 	@Override
@@ -84,8 +94,14 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 	@Override
 	public int getHardLinks(String file)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		if (isDirectory(file))
+		{
+			return 3;
+		}
+		else
+		{
+			return 1;
+		}
 	}
 
 	@Override
@@ -99,15 +115,13 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 	@Override
 	public String getOwner(String file)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return "-";
 	}
 
 	@Override
 	public String getGroup(String file)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return "-";
 	}
 
 	@Override
@@ -120,8 +134,15 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 	@Override
 	public String[] listFiles(String dir) throws IOException
 	{
-		System.out.println("list "+dir);
-		return new String[] {"/pisatf"};
+		ArrayList<MetadataDiscordFile> mdfList = currentFolder.listFiles();
+		String[] toReturn = new String[mdfList.size()];
+		int i=0;
+		for (MetadataDiscordFile mdf:mdfList)
+		{
+			System.out.println(mdf);
+			toReturn[i] = mdf.getFilename();
+		}
+		return toReturn;
 	}
 
 	@Override
@@ -158,7 +179,9 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 	@Override
 	public void mkdirs(String file) throws IOException
 	{
-		// TODO Auto-generated method stub
+//		DiscordFolder newFolder = new DiscordFolder(acm);
+//		newFolder.setFilename(file);
+//		currentFolder.addFile(newFolder);
 		
 	}
 
@@ -186,7 +209,7 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 	@Override
 	public void touch(String file, long time) throws IOException
 	{
-		// TODO Auto-generated method stub
+		System.out.println("touch "+file);
 		
 	}
 }

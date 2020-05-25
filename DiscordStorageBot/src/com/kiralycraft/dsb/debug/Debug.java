@@ -1,5 +1,8 @@
 package com.kiralycraft.dsb.debug;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
@@ -15,20 +18,49 @@ public class Debug {
 		FileBasedIO fbio = new FileBasedIO(9);
 		AbstractChunkManager acm = new SingleThreadedChunkManager(fbio);
 		
-//		
+		DiscordFolder df = new DiscordFolder(acm, "penis");
 		
-		MetadataDiscordFile df = new MetadataDiscordFile(acm);
-		df.setFilename("pisat.png");
-		df.writeBoolean(true);
-		df.flush();
+		File star = new File("star.png");
 		
-		DiscordFolder discoFolder = new DiscordFolder(acm);
-		discoFolder.addFile(df);
-//		
-		for (MetadataDiscordFile mdf:discoFolder.listFiles())
+		MetadataDiscordFile mdf = new MetadataDiscordFile(acm, star.getName(), false, star.length());
+		
+		FileInputStream fis = new FileInputStream(star);
+		int len;
+		byte[] buffer = new byte[1024];
+		while((len = fis.read(buffer))>0)
 		{
-			System.out.println(mdf.getFilename());
+			mdf.write(buffer,0,len);
 		}
+		fis.close();
+		mdf.flush();
+		
+		df.addFile(mdf);
+		
+		
+		System.out.println(df.listFiles().get(0).length());
+		
+		
+		MetadataDiscordFile source = df.listFiles().get(0);
+		FileOutputStream fos = new FileOutputStream(new File("star2.png"));
+		while((len = source.read(buffer))>0)
+		{
+			fos.write(buffer,0,len);
+		}
+		fos.close();
+//		
+		
+//		MetadataDiscordFile df = new MetadataDiscordFile(acm);
+//		df.setFilename("pisat.png");
+//		df.writeBoolean(true);
+//		df.flush();
+//		
+//		DiscordFolder discoFolder = new DiscordFolder(acm);
+//		discoFolder.addFile(df);
+////		
+//		for (MetadataDiscordFile mdf:discoFolder.listFiles())
+//		{
+//			System.out.println(mdf.getFilename());
+//		}
 //		df.writeBoolean(true);
 //		System.out.println(df.readBoolean());
 //		FileInputStream fis = new FileInputStream(new File("star.png"));
@@ -73,7 +105,7 @@ public class Debug {
 //		fat.addFile(fe);
 //		tfs.flushEntry(fat);
 		
-//		TextBasedFilesystemFTPIO fs = new TextBasedFilesystemFTPIO();
+//		TextBasedFilesystemFTPIO fs = new TextBasedFilesystemFTPIO(acm);
 //		// Creates a noop authenticator, which allows anonymous authentication
 //		NoOpAuthenticator auth = new NoOpAuthenticator(fs);
 //

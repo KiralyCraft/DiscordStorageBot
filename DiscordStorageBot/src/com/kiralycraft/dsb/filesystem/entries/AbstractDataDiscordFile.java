@@ -10,15 +10,15 @@ import java.io.UTFDataFormatException;
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
 import com.kiralycraft.dsb.entities.EntityID;
 
-public class DataDiscordFile extends DiscordFile implements DataOutput, DataInput
+public abstract class AbstractDataDiscordFile extends AbstractDiscordFile implements DataOutput, DataInput
 {
 
-	public DataDiscordFile(AbstractChunkManager acm)
+	public AbstractDataDiscordFile(AbstractChunkManager acm)
 	{
 		super(acm);
 	}
 
-	public DataDiscordFile(AbstractChunkManager acm, EntityID baseID)
+	public AbstractDataDiscordFile(AbstractChunkManager acm, EntityID baseID)
 	{
 		super(acm, baseID);
 	}

@@ -1,14 +1,10 @@
 package com.kiralycraft.dsb.filesystem.entries;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
 import com.kiralycraft.dsb.entities.Chunk;
 import com.kiralycraft.dsb.entities.EntityID;
 
-public class DiscordFile
+public abstract class AbstractDiscordFile
 {
 	private int posInCurrentChunk;
 	private long passedChunks = 0;
@@ -20,25 +16,42 @@ public class DiscordFile
 	private Chunk baseChunk;
 	private AbstractChunkManager acm;
 
-	public DiscordFile(AbstractChunkManager acm) 
+	public AbstractDiscordFile(AbstractChunkManager acm) 
+	{
+		this(acm,null);
+//		this.posInCurrentChunk = Chunk.getDataOffset();
+//		this.baseChunk = acm.allocateChunk();
+//		this.currentChunk = acm.allocateChunk();
+//		this.baseChunk.setNext(this.currentChunk.getID());	
+//		flushBaseChunk();
+	}
+
+	public AbstractDiscordFile(AbstractChunkManager acm, EntityID baseID) 
 	{
 		this.acm = acm;
 		this.posInCurrentChunk = Chunk.getDataOffset();
-		this.baseChunk = acm.allocateChunk();
-		this.currentChunk = acm.allocateChunk();
-		this.baseChunk.setNext(this.currentChunk.getID());	
-		flushBaseChunk();
+		
+		if (baseID != null)
+		{
+			this.baseChunk = acm.getChunk(baseID);
+			this.currentChunk = acm.getChunk(baseChunk.getNext());
+			this.length = baseChunk.getLong(Chunk.getDataOffset());
+		}
+		else
+		{
+			this.posInCurrentChunk = Chunk.getDataOffset();
+			this.baseChunk = acm.allocateChunk();
+			this.currentChunk = acm.allocateChunk();
+			this.baseChunk.setNext(this.currentChunk.getID());	
+		}
 	}
-
-	public DiscordFile(AbstractChunkManager acm, EntityID baseID) 
-	{
-		this.acm = acm;
-		this.posInCurrentChunk = Chunk.getDataOffset();
-		this.baseChunk = acm.getChunk(baseID);
-		this.currentChunk = acm.getChunk(baseChunk.getNext());
-		this.length = baseChunk.getLong(Chunk.getDataOffset());
-	}
-
+	
+	/**
+	 * This method should be implemented by subclasses that do some initialization to the base {@link Chunk}.
+	 * The chunk is NOT automatically flushed!
+	 */
+	public abstract void initializeBaseChunk();
+	
 	private int getMaxChunkBytesExcludingMeta()
 	{
 		return acm.getMaxChunkByteSize() - Chunk.getDataOffset();
@@ -216,15 +229,12 @@ public class DiscordFile
 	{
 		length = newLength;
 		baseChunk.setLong(Chunk.getDataOffset(), newLength);
-		flushBaseChunk();
 	}
 
 	public boolean flush()
 	{
 		if (currentChunkTainted)
-		{
-			flushBaseChunk();
-			
+		{			
 			boolean flushResult = acm.flushChunk(currentChunk);
 			if (flushResult)
 			{

@@ -6,18 +6,40 @@ import com.kiralycraft.dsb.chunks.AbstractChunkManager;
 import com.kiralycraft.dsb.entities.Chunk;
 import com.kiralycraft.dsb.entities.EntityID;
 
-public class MetadataDiscordFile extends DataDiscordFile
+public class MetadataDiscordFile extends AbstractDataDiscordFile
 {
 	protected final int MAX_STRING_LENGTH=64;
-	
-	public MetadataDiscordFile(AbstractChunkManager acm)
+	private String pendingFilename;
+	private boolean pendingIsFolder;
+	private long pendingLength;
+		
+	public MetadataDiscordFile(AbstractChunkManager acm,String filename,boolean isFolder,long length) 
 	{
 		super(acm);
+		this.pendingFilename = filename;
+		this.pendingIsFolder = isFolder;
+		this.pendingLength = length;
+		
+		initializeBaseChunk();
+		
+		flushBaseChunk();
 	}
 	
-	public MetadataDiscordFile(AbstractChunkManager acm, EntityID baseID) 
+	public MetadataDiscordFile(AbstractChunkManager acm, EntityID entityID)
 	{
-		super(acm,baseID);
+		super(acm,entityID);
+	}
+
+	@Override
+	public void initializeBaseChunk()
+	{
+		this.setFilename(pendingFilename);
+		if (pendingIsFolder)
+		{
+			setFolder();
+		}
+		this.setLength(pendingLength);
+		this.setLastModified(System.currentTimeMillis());
 	}
 	
 	public String getFilename()
@@ -28,7 +50,6 @@ public class MetadataDiscordFile extends DataDiscordFile
 	public void setFilename(String filename)
 	{
 		putString(filename,Chunk.getDataOffset()+8);
-		flushBaseChunk();
 	}
 	
 	public boolean isFolder()
@@ -39,7 +60,6 @@ public class MetadataDiscordFile extends DataDiscordFile
 	public void setFolder()
 	{
 		getBaseChunk().getChunkData()[Chunk.getDataOffset()+8+MAX_STRING_LENGTH]=1;
-		flushBaseChunk();
 	}
 	
 	public long getLastModified()
@@ -50,7 +70,6 @@ public class MetadataDiscordFile extends DataDiscordFile
 	public void setLastModified(long lastModified)
 	{
 		getBaseChunk().setLong(Chunk.getDataOffset()+8+MAX_STRING_LENGTH+1, lastModified);
-		flushBaseChunk();
 	}
 	
 	

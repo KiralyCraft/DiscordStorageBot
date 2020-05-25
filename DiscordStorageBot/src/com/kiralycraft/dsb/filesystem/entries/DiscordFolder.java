@@ -15,34 +15,24 @@ public class DiscordFolder extends MetadataDiscordFile
 	
 	private AbstractChunkManager acm;
 
-	public DiscordFolder(AbstractChunkManager acm)
+	public DiscordFolder(AbstractChunkManager acm,String filename)
 	{
-		super(acm);
-		setLength(512);
-		this.acm = acm;
-	}
-
-	public DiscordFolder(AbstractChunkManager acm, EntityID baseID)
-	{
-		super(acm, baseID);
+		super(acm, filename, true, 6000);
 		this.acm = acm;
 	}
 	
+	public DiscordFolder(AbstractChunkManager acm, EntityID entityID)
+	{
+		super(acm,entityID);
+	}
+
 	public void addFile(MetadataDiscordFile discordFile)
 	{
 		try
 		{
 			seek(0);
 			long fileCount = readLong();
-			seek(fileCount*(8*3)+8);
-//			byte[] fileName = new byte[MAX_STRING_LENGTH];
-//			byte[] actualFilename = discordFile.getFilename().getBytes(Charset.forName("UTF-8"));
-//			
-//			int byteCount = Math.min(actualFilename.length,MAX_STRING_LENGTH-1);
-//			System.arraycopy(actualFilename, 0, fileName, 0, byteCount);
-//			fileName[byteCount]=0;
-//			write(fileName);
-//			
+			seek(fileCount*(8*3)+8);			
 			EntityID baseID = discordFile.getBaseChunk().getID();
 			writeLong(baseID.getBaseID());
 			writeLong(baseID.getSectionID());
@@ -68,25 +58,10 @@ public class DiscordFolder extends MetadataDiscordFile
 			for (int i=0;i<fileCount;i++)
 			{
 				seek(i*(8*3)+8);
-//				byte[] fileName = new byte[MAX_STRING_LENGTH];
-//				read(fileName,0,MAX_STRING_LENGTH);
-//				
-//				int targetSize = 0;
-//				for (int j=0;j<MAX_STRING_LENGTH-1;j++)
-//				{
-//					if (fileName[j]!=0)
-//					{
-//						targetSize = i;
-//					}
-//					else
-//					{
-//						break;
-//					}
-//				}
 				long baseID = readLong();
 				long sectionID = readLong();
 				long entityID = readLong();
-				MetadataDiscordFile mdf = new MetadataDiscordFile(acm, new EntityID(baseID,sectionID,entityID));
+				MetadataDiscordFile mdf = new MetadataDiscordFile(acm, new EntityID(baseID,sectionID,entityID)); //Load the file 
 				fileList.add(mdf);
 			}
 			return fileList;
