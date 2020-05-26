@@ -11,23 +11,27 @@ import java.nio.charset.Charset;
 import com.kiralycraft.dsb.entities.EntityID;
 import com.kiralycraft.dsb.exceptions.ChunkNotFoundException;
 import com.kiralycraft.dsb.filesystem.FileIOInterface;
-import com.kiralycraft.dsb.filesystem.entries.DiscordFolder;
 
-public class FileBasedIO
+public class FileBasedIO implements FileIOInterface
 {
-	/*
+	
 	private File baseFolder;
 	private int currentChunk = 0;
 	public FileBasedIO()
 	{
 		this.baseFolder = new File("data");
 		this.baseFolder.mkdir();
-		this.currentChunk = baseFolder.list().length;
+		
+		for (File f:this.baseFolder.listFiles())
+		{
+			f.delete();
+		}
+		this.currentChunk = 0;
 	}
 	@Override
 	public int getChunkSize() 
 	{
-		return 6000;
+		return 2000;
 	}
 
 	@Override
@@ -68,33 +72,21 @@ public class FileBasedIO
 		return true;
 	}
 
-	@Override
-	public boolean checkChunkExists(EntityID eid) throws IOException 
-	{
-		try
-		{
-			getRawChunkData(eid);
-			return true;
-		}
-		catch(ChunkNotFoundException e)
-		{
-			return false;
-		}
-		catch(IOException ie)
-		{
-			throw ie;
-		}
-	}
 	
 	private File getFile(EntityID eid)
 	{
 		return new File(baseFolder,eid.getBaseID()+"-"+eid.getSectionID()+"-"+eid.getEntityID()+".txt");
 	}
+
 	@Override
-	public EntityID createEmptyChunk() throws IOException
+	public EntityID createEmptyChunk(String emptyChunkData) throws IOException
 	{
-		EntityID eid = new EntityID(currentChunk++);
-		updateRawChunkData(eid,"");
-		return eid;
-	}*/
+		EntityID theID = new EntityID(currentChunk);
+		File theFile = getFile(theID);
+		FileOutputStream fos = new FileOutputStream(theFile);
+		fos.write(emptyChunkData.getBytes(Charset.forName("UTF-8")));
+		fos.close();
+		currentChunk++;
+		return theID;
+	}
 }

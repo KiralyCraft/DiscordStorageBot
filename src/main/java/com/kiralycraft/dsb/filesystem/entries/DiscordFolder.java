@@ -34,7 +34,7 @@ public class DiscordFolder extends MetadataDiscordFile
 			
 			seek(0);
 			writeLong(fileCount+1);
-			flush();
+			flush(true);
 		} 
 		catch (IOException e)
 		{

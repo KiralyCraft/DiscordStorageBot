@@ -42,7 +42,7 @@ public abstract class AbstractDiscordFile
 			this.posInCurrentChunk = Chunk.getDataOffset();
 			this.baseChunk = acm.allocateChunk();
 			this.currentChunk = acm.allocateChunk();
-			this.baseChunk.setNext(this.currentChunk.getID());
+			this.baseChunk.setNext(this.currentChunk.getID()); //No need to flush, because the only implementation is the Metadata file, that flushes anyway
 		}
 	}
 
@@ -93,8 +93,7 @@ public abstract class AbstractDiscordFile
 		posInCurrentChunk++;
 		if (posInCurrentChunk >= acm.getMaxChunkByteSize())
 		{
-			flushBaseChunk(); //To update the length
-			flush();
+			flush(true);
 			moveToNextChunk();
 			passedChunks++;
 			posInCurrentChunk = Chunk.getDataOffset();
@@ -145,7 +144,7 @@ public abstract class AbstractDiscordFile
 		passedChunks = pos / getMaxChunkBytesExcludingMeta();
 		posInCurrentChunk = (int) pos % getMaxChunkBytesExcludingMeta()+Chunk.getDataOffset();
 
-		flush();
+		flush(false);
 
 		if (passedChunks > oldPassedChunks)
 		{
@@ -235,9 +234,18 @@ public abstract class AbstractDiscordFile
 		baseChunk.setLong(Chunk.getDataOffset(), newLength);
 	}
 
-	public boolean flush()
+	/**
+	 * Flushes the current chunk, if tainted. If specified, it flushes the base chunk as well.
+	 * @param flushBaseChunk
+	 * @return
+	 */
+	public boolean flush(boolean flushBaseChunk)
 	{
-		//flushBaseChunk();
+		if (flushBaseChunk)
+		{
+			flushBaseChunk();
+		}
+		
 		if (currentChunkTainted)
 		{
 			boolean flushResult = acm.flushChunk(currentChunk);

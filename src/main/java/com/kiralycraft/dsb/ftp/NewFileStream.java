@@ -28,7 +28,7 @@ public class NewFileStream extends OutputStream
 	@Override
 	public void flush() throws IOException
 	{
-		this.newFile.flush();
+		this.newFile.flush(true);
 	}
 	@Override
 	public void close() throws IOException

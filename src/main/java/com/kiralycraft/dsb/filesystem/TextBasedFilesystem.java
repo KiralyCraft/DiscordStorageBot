@@ -96,7 +96,7 @@ public class TextBasedFilesystem
 				{
 					mdf.write(buffer,0,len);
 				}
-				mdf.flush();
+				mdf.flush(true);
 				DiscordFolder.fromMDF(acm, currentFile).addFile(mdf);
 				return true;
 			}
