@@ -49,8 +49,9 @@ public interface FileIOInterface
 	 * It is expected for this method to block.
 	 * 
 	 * WARNING: If anything goes wrong, this method should throw an {@link IOException} with details.
+	 * @param emptyChunkData 
 	 * @param eid
 	 * @return
 	 */
-	public EntityID createEmptyChunk() throws IOException;
+	public EntityID createEmptyChunk(String emptyChunkData) throws IOException;
 }

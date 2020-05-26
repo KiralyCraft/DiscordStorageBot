@@ -72,7 +72,7 @@ public class FileBasedIO implements FileIOInterface
 		return new File(baseFolder,eid.getBaseID()+"-"+eid.getSectionID()+"-"+eid.getEntityID()+".txt");
 	}
 	@Override
-	public EntityID createEmptyChunk() throws IOException
+	public EntityID createEmptyChunk(String emptyChunkData) throws IOException
 	{
 		EntityID eid = new EntityID(currentChunk++);
 		updateRawChunkData(eid,"");
