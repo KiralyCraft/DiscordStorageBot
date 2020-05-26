@@ -117,10 +117,32 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String> {
     }
 
     @Override
-    public long getLastModified(String file) {
-        System.out.println("lastmodified \"" + file + "\"");
+    public long getLastModified(String file) 
+    {
+    	long toReturn = 0;
+        if (!file.equals(getRoot() + FOLDER_INDICATOR) && !file.equals(getRoot())) {
+            MetadataDiscordFile mdf;
+            if (!file.contains("/")) {
+                mdf = tbf.getFile(file);
+                if (mdf != null) {
+                    toReturn = mdf.getLastModified();
+                }
+            } else {
+                String parent = file.substring(0, file.lastIndexOf("/"));
+                String fileName = file.substring(file.lastIndexOf("/") + 1);
 
-        return 0;
+                if (tbf.chdir(parent)) {
+                    mdf = tbf.getFile(fileName);
+                    if (mdf != null) {
+                        toReturn = mdf.getLastModified();
+                    } else {
+                        System.out.println("Could not find file size of \"" + fileName + "\" in current dir: \"" + tbf.getCurrentPath() + "\". Exists: " + tbf.exists(fileName));
+                    }
+                }
+            }
+        }
+        System.out.println("Get last modified of  \"" + file + "\" returned " + toReturn);
+        return toReturn;
     }
 
     @Override
