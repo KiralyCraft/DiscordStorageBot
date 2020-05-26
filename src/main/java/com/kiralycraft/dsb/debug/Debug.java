@@ -1,5 +1,15 @@
 package com.kiralycraft.dsb.debug;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import javax.annotation.Nonnull;
+import javax.security.auth.login.LoginException;
+
 import com.guichaguri.minimalftp.FTPServer;
 import com.guichaguri.minimalftp.impl.NoOpAuthenticator;
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
@@ -7,6 +17,7 @@ import com.kiralycraft.dsb.chunks.SingleThreadedChunkManager;
 import com.kiralycraft.dsb.entities.EntityID;
 import com.kiralycraft.dsb.filesystem.TextBasedFilesystem;
 import com.kiralycraft.dsb.ftp.TextBasedFilesystemFTPIO;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -15,36 +26,42 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
-import javax.annotation.Nonnull;
-import javax.security.auth.login.LoginException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-public class Debug extends ListenerAdapter {
-
-    private static final long guildID = 713822278307282984L;
-    private static final long channelID = 714569408890273802L;
+public class Debug extends ListenerAdapter 
+{
+    public static final long guildID = 713822278307282984L;
+    public static final long channelID = 714569408890273802L;
     public static List<JDA> jdaList = new ArrayList<>();
 
     public static int bufferSize = 4;
 
-    public Debug() throws LoginException, InterruptedException {
-        jdaList.add(getNewJDA("NzE0NjE3OTQzNjg1NzI2MjIz.XsxUCA.mSDo5-aLLZ4ZBSE6KYNuLT4MuzM").build());
-        jdaList.add(getNewJDA("NzE0NjE3ODY0MDk4Njc2ODk4.XsxT_Q.6Mg5iXb9djb2x4KZdG3SpH2asBM").build());
-        jdaList.add(getNewJDA("NzE0NjE3NzU1NTAzOTUxOTMz.XsxT7g.kiFLWKnkd-hZwc2fiFq5y9FXP_Q").build());
-        jdaList.add(getNewJDA("NzE0NjA2MTg0Mzk2NDg4NzY0.XsxT5A.OQWPL878TUIYBkglLRKdOTMI6zc").build());
-        jdaList.add(getNewJDA("NzE0NjA1ODQwMjY2NTU5NTI4.XsxT1g.XbpNd0C0z_Ti17OGQQknd3QGsDQ").build());
-        Thread.sleep(2000L);
-        jdaList.add(getNewJDA("NzEzODIzMzA1MDI2NjMzODE5.XsxTxA.q8QkfVH3R_eUjPBcr0ADG2m6zlo").addEventListeners(this).build());
+    public Debug() throws Exception
+    {
+    	Scanner scan = new Scanner(new File("discordtokens.txt"));
+    	
+    	ArrayList<JDABuilder> pendingBuilders = new ArrayList<JDABuilder>();
+    	while(scan.hasNext())
+    	{
+    		String readLine = scan.nextLine();
+    		if (!readLine.isEmpty())
+    		{
+    			pendingBuilders.add(getNewJDA(readLine));
+    			Thread.sleep(500);
+    		}
+    	}
+        
+    	for (int i=0;i<pendingBuilders.size()-1;i++)
+    	{
+    		jdaList.add(pendingBuilders.get(i).build());
+    	}
+    	Thread.sleep(2000);
+    	jdaList.add(pendingBuilders.get(pendingBuilders.size()-1).addEventListeners(this).build());
+        scan.close();
     }
 
-    public static void main(String[] args) throws LoginException, InterruptedException {
+    public static void main(String[] args) throws Exception
+    {
+    	
         new Debug();
-    }
-
-    public static TextChannel getChannel(JDA jdacurr) {
-        return jdacurr.getGuildById(guildID).getTextChannelById(channelID);
     }
 
     public static long getGuildID() {
@@ -67,7 +84,8 @@ public class Debug extends ListenerAdapter {
                 //FileBasedIO fbio = new FileBasedIO();
                 DiscordBasedIO discordBasedIO = new DiscordBasedIO();
                 AbstractChunkManager acm = new SingleThreadedChunkManager(discordBasedIO);
-                TextBasedFilesystem tbf = new TextBasedFilesystem(acm, new EntityID(guildID, channelID, 714857705382084678L));
+//                TextBasedFilesystem tbf = new TextBasedFilesystem(acm, new EntityID(guildID,channelID,714908234431070260L));
+                TextBasedFilesystem tbf = new TextBasedFilesystem(acm, new EntityID(guildID,channelID,714919794779881573L));
 
                 TextBasedFilesystemFTPIO fs = new TextBasedFilesystemFTPIO(acm, tbf);
                 // Creates a noop authenticator, which allows anonymous authentication

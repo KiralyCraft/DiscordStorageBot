@@ -4,6 +4,7 @@ import com.kiralycraft.dsb.entities.EntityID;
 import com.kiralycraft.dsb.filesystem.FileIOInterface;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -23,11 +24,13 @@ public class DiscordBasedIO implements FileIOInterface {
         }
         return jda;
     }
-
+    private long getNewSnowflake()
+  	{
+      	return (System.currentTimeMillis()-1420070400000L) << 22;
+  	}
     public JDA getJDA(long snowflakeID) {
-        int ID = (int) ((getMillisFromID(snowflakeID) / 2500) % Debug.jdaList.size());
+        int ID = (int) ((getMillisFromID(snowflakeID) / 1000) % Debug.jdaList.size());
         JDA jda = Debug.jdaList.get(ID);
-        System.out.println("ID: " + ID + "\nSnowflakeID: " + snowflakeID);
         return jda;
     }
 
@@ -42,7 +45,7 @@ public class DiscordBasedIO implements FileIOInterface {
 
     @Override
     public String getRawChunkData(EntityID eid) throws IOException {
-        Message message = Debug.getChannel(getJDA()).retrieveMessageById(eid.getEntityID()).complete();
+        Message message = getChannel(getJDA()).retrieveMessageById(eid.getEntityID()).complete();
         if (message != null) {
             return message.getContentRaw();
         }
@@ -50,28 +53,79 @@ public class DiscordBasedIO implements FileIOInterface {
     }
 
     @Override
-    public boolean updateRawChunkData(EntityID eid, String newData) throws IOException {
-        String temp = !newData.isEmpty() ? newData : ".";
-        System.out.println("Updating chunk with ID: " + eid.getEntityID());
-        Debug.getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), temp).queue();
-        return true;
+    public boolean updateRawChunkData(EntityID eid, String newData) throws IOException 
+    {
+    	try
+    	{
+    		getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), newData).complete();
+    		return true;
+    	}
+    	catch(Exception e)
+    	{
+    		System.err.println("Expected JDA for messageID: "+eid.getEntityID()+" ("+Debug.jdaList.indexOf(getJDA(eid.getEntityID()))+") does not correspond to the actual JDA! Attempting recover");
+    		
+    		JDA actualJDA = null;
+    		int jdaCount = Debug.jdaList.size();
+    		for (int currentIndex=0;currentIndex<jdaCount;currentIndex++)
+    		{
+    			JDA correctionJDA = Debug.jdaList.get(currentIndex);
+    			try
+    			{
+    				System.err.println("Trying JDA "+(currentIndex+1)+"/"+jdaCount);
+    				getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), newData).complete(); //Complete, pentru ca vrem try catch
+    				actualJDA = correctionJDA;
+    				break;
+    			}
+    			catch(Exception e2)
+    			{
+    				;//Nothing, ignore error
+    			}
+    		}
+    		
+    		if (actualJDA!=null)
+    		{
+    			System.err.println("Actual JDA was "+Debug.jdaList.indexOf(actualJDA));
+    		}
+    		else
+    		{
+    			System.err.println("Could not find the actual JDA!");
+    		}
+    	}
+        return false;
     }
 
     @Override
-    public EntityID createEmptyChunk(String emptyChunkDate) throws IOException {
-        AtomicLong entityID = new AtomicLong();
-        //Message message1 = Debug.getChannel(getJDA(System.currentTimeMillis() << 22)).sendMessage(".").complete();
-        Message message = Debug.getChannel(getJDA((System.currentTimeMillis() + 350) << 22)).sendMessage(emptyChunkDate).complete();
-        System.out.println("Creating chunk with ID: " + message.getIdLong());
-        entityID.set(message.getIdLong());
-        EntityID eid = new EntityID(Debug.getGuildID(), Debug.getChannelID(), entityID.get());
-
-        //updateRawChunkData(eid, "");
-        return eid;
+    public EntityID createEmptyChunk(String emptyChunkDate) throws IOException 
+    {
+    	EntityID chosenID;
+    	System.out.println("Creating empty chunk");
+    	int attemptCount = 0;
+    	while(true)
+    	{
+    		long predictedSnowFlake = getNewSnowflake();
+	    	JDA predictedJDA = getJDA(predictedSnowFlake);
+	        Message message = getChannel(predictedJDA).sendMessage(emptyChunkDate).complete();
+	        if (getJDA(message.getIdLong()).equals(predictedJDA))
+	        {
+	        	System.out.println("PredictedJDA corresponds to actual JDA. Attempt #"+attemptCount);
+	        	chosenID = new EntityID(Debug.getGuildID(), Debug.getChannelID(), message.getIdLong());
+	        	break;
+	        }
+	        else
+	        {
+	        	System.out.println("Predicted JDA does not correspond to actual JDA. Attempt #"+attemptCount);
+	        	getChannel(predictedJDA).deleteMessageById(message.getIdLong()).queue();
+	        }
+	        attemptCount++;
+    	}
+        return chosenID;
     }
 
-    @Override
-    public boolean checkChunkExists(EntityID eid) throws IOException {
-        throw new IOException("Not implemented ");
+
+  
+
+	public static TextChannel getChannel(JDA jdacurr) 
+    {
+        return jdacurr.getGuildById(Debug.guildID).getTextChannelById(Debug.channelID);
     }
 }
