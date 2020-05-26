@@ -108,7 +108,7 @@ public class DiscordBasedIO implements FileIOInterface {
     		while(true)
     		{
     			predictedSnowFlake = getNewSnowflake();
-    			if (getMillisFromID(predictedSnowFlake) % Debug.BOT_LINGER < (Debug.BOT_LINGER*0.25))
+    			if (getMillisFromID(predictedSnowFlake) % Debug.BOT_LINGER < (Debug.BOT_LINGER*Debug.BOT_LINGER_TIMEFRAME_SYNC))
     			{
     				break;
     			}

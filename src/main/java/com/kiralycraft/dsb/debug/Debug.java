@@ -34,6 +34,7 @@ public class Debug extends ListenerAdapter
 	public static int BOT_LINGER = 500;
 
     public static int bufferSize = 4;
+	public static double BOT_LINGER_TIMEFRAME_SYNC;
 
     public Debug() throws Exception
     {
@@ -62,6 +63,7 @@ public class Debug extends ListenerAdapter
     public static void main(String[] args) throws Exception
     {
     	BOT_LINGER = Integer.parseInt(args[0]);
+    	BOT_LINGER_TIMEFRAME_SYNC = Double.parseDouble(args[1]);
         new Debug();
     }
 
