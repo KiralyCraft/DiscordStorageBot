@@ -66,24 +66,6 @@ public class FileBasedIO implements FileIOInterface
 		fos.close();
 		return true;
 	}
-
-	@Override
-	public boolean checkChunkExists(EntityID eid) throws IOException 
-	{
-		try
-		{
-			getRawChunkData(eid);
-			return true;
-		}
-		catch(ChunkNotFoundException e)
-		{
-			return false;
-		}
-		catch(IOException ie)
-		{
-			throw ie;
-		}
-	}
 	
 	private File getFile(EntityID eid)
 	{

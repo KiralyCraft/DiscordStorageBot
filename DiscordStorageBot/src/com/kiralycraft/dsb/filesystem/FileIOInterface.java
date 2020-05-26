@@ -53,15 +53,4 @@ public interface FileIOInterface
 	 * @return
 	 */
 	public EntityID createEmptyChunk() throws IOException;
-	
-	/**
-	 * This method should check if an entity exists, using the provided {@link EntityID}.
-	 * 
-	 * It is expected for this method to block.
-	 * 
-	 * WARNING: If anything goes wrong, this method should throw an {@link IOException} with details.
-	 * @param eid
-	 * @return
-	 */
-	public boolean checkChunkExists(EntityID eid) throws IOException;
 }
