@@ -1,11 +1,7 @@
 package com.kiralycraft.dsb.chunks;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import com.kiralycraft.dsb.entities.Chunk;
@@ -20,12 +16,6 @@ import com.kiralycraft.dsb.log.Logger;
  */
 public abstract class AbstractChunkManager
 {
-	private class PendingChunkChange
-	{
-		int chunkInternalOffset;
-		byte[] bytesToChange;
-	}
-	
 	private FileIOInterface fioi;
 	private int maxChunkSizeBytes;
 
@@ -48,18 +38,9 @@ public abstract class AbstractChunkManager
 	{
 		try
 		{
-//			Chunk foundChunk = getChunkFromCache(id);
-//			if (foundChunk==null) //If no chunk was found in cache, it means it cannot be dirty
-//			{
-				String chunkData = fioi.getRawChunkData(id).trim();
-				byte[] chunkByteData = Base64.getDecoder().decode(chunkData);				
-				return new Chunk(id, chunkByteData);
-//			}
-//			else
-//			{
-////				applyPendingChanges(foundChunk); //Changes the cached chunk too
-//				return foundChunk;
-//			}
+			String chunkData = fioi.getRawChunkData(id).trim();
+			byte[] chunkByteData = Base64.getDecoder().decode(chunkData);				
+			return new Chunk(id, chunkByteData);
 		}
 		catch(IllegalArgumentException iae)
 		{
@@ -84,9 +65,7 @@ public abstract class AbstractChunkManager
 		try
 		{			
 			byte[] chunkByteData = chunk.getChunkData();
-			
-			String chunkData = Base64.getEncoder().encodeToString(chunkByteData);
-			return fioi.updateRawChunkData(chunk.getID(),chunkData);
+			return fioi.updateRawChunkData(chunk.getID(),encodeChunkData(chunkByteData));
 		}
 		catch(IOException e)
 		{
@@ -96,40 +75,6 @@ public abstract class AbstractChunkManager
 
 		return false;
 	}
-	
-//	/**
-//	 * This method applies the pending changes to the given byte array, representing a {@link Chunk}'s data.
-//	 * If there are no changes, nothing happens.
-//	 * 
-//	 * Returns the number of changes applied.
-//	 * @param chunkByteData
-//	 * @param id
-//	 * @param removeFromCache 
-//	 */
-//	private int applyPendingChanges(Chunk chunk)
-//	{
-//		EntityID id = chunk.getID();
-//		List<PendingChunkChange> pendingChanges;
-//		if ((pendingChanges = pendingChunkChanges.get(id))!=null)
-//		{
-//			int pendingChangesCount = pendingChanges.size();
-//			for (PendingChunkChange pcc:pendingChanges)
-//			{
-//				byte[] changedData = pcc.bytesToChange;
-//				int changedDataLength = changedData.length;
-//				for (int i=0;i<changedDataLength;i++)
-//				{
-//					chunk.getChunkData()[i+pcc.chunkInternalOffset] = changedData[i];
-//				}
-//			}
-//			if (pendingChangesCount > 0)
-//			{
-//				pendingChunkChanges.remove(id);
-//			}
-//			return pendingChangesCount;
-//		}
-//		return 0; //No changes
-//	}
 
 	/**
 	 * This method allocates a new, empty {@link Chunk}, and returns it's ID, just like insertion.
@@ -141,7 +86,7 @@ public abstract class AbstractChunkManager
 		try
 		{
 			byte[] chunkByteData = new byte[getMaxChunkByteSize()];
-			EntityID chunkID = fioi.createEmptyChunk(Base64.getEncoder().encodeToString(chunkByteData));
+			EntityID chunkID = fioi.createEmptyChunk(encodeChunkData(chunkByteData));
 			Chunk toReturn = new Chunk(chunkID, chunkByteData);
 			if (chunkID!=null)
 			{
@@ -170,43 +115,13 @@ public abstract class AbstractChunkManager
 	{
 		return maxChunkSizeBytes;		
 	}
-
-//	/**
-//	 * Adds a pending change for the supplied {@link EntityID}
-//	 * @param chunkID
-//	 * @param theArray
-//	 * @param offset
-//	 */
-//	public void addPendingChange(EntityID chunkID, byte[] theArray, int offset)
-//	{
-//		synchronized(pendingChunkChanges)
-//		{
-//			cacheChunk(chunkID); //Caches it only if it does not exist
-//			
-//			List<PendingChunkChange> pendingChanges;
-//			if ((pendingChanges = pendingChunkChanges.get(chunkID))==null)
-//			{
-//				pendingChanges = new ArrayList<PendingChunkChange>();
-//				pendingChunkChanges.put(chunkID, pendingChanges);
-//			}
-//			PendingChunkChange pccToAdd = new PendingChunkChange();
-//			pccToAdd.bytesToChange = theArray;
-//			pccToAdd.chunkInternalOffset = offset;
-//			pendingChanges.add(pccToAdd);
-//			
-//			
-//		}
-//	}
-
-//	/**
-//	 * This method caches the given Chunk only if it is not already cached
-//	 * @param chunkID
-//	 */
-//	private void cacheChunk(EntityID chunkID)
-//	{
-//		if (!cachedChunks.containsKey(chunkID))
-//		{
-//			cachedChunks.put(chunkID, getChunk(chunkID));
-//		}
-//	}
+	
+	/**
+	 * This is a helper method for encoding the supplied data in a format supported by the Chunk filesystem
+	 * @return
+	 */
+	private String encodeChunkData(byte[] chunkByteData)
+	{
+		return Base64.getEncoder().encodeToString(chunkByteData);
+	}
 }

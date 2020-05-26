@@ -27,6 +27,7 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 	@Override
 	public String getRoot()
 	{
+		System.out.println("Get root");
 		return "";
 	}
 
@@ -37,7 +38,7 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 		
 		if (file.equals(getRoot()))
 		{
-			return "/.";
+			return "/";
 		}
 		else
 		{
@@ -252,13 +253,15 @@ public class TextBasedFilesystemFTPIO implements IFileSystem<String>
 		{
 			return cwd;
 		}
-		else
+		if (cwd.isEmpty())
 		{
-			String strippedCWD = cwd.replace(getRoot(), "/");
-			if (tbf.chdir(strippedCWD))
-			{
-				return cwd+"/"+path;
-			}
+			return path;
+		}
+		
+		String strippedCWD = cwd.replace(getRoot(), "/");
+		if (tbf.chdir(strippedCWD))
+		{
+			return cwd+"/"+path;
 		}
 		throw new IOException("CWD does not exist");
 	}

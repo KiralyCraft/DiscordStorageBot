@@ -12,7 +12,7 @@ public class ReadFileStream extends InputStream
 
 	public ReadFileStream(String filename,TextBasedFilesystem tbf)
 	{
-		System.out.println("Writing the file "+filename+" to folder "+tbf.getCurrentPath());
+		System.out.println("Reading the file "+filename+" from folder "+tbf.getCurrentPath());
 		this.newFile = tbf.getFile(filename);
 	}
 	

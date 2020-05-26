@@ -75,7 +75,7 @@ public class FileBasedIO implements FileIOInterface
 	public EntityID createEmptyChunk(String emptyChunkData) throws IOException
 	{
 		EntityID eid = new EntityID(currentChunk++);
-		updateRawChunkData(eid,"");
+		updateRawChunkData(eid,emptyChunkData);
 		return eid;
 	}
 }

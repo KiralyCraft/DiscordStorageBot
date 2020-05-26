@@ -237,7 +237,6 @@ public abstract class AbstractDiscordFile
 
 	public boolean flush()
 	{
-		flushBaseChunk();
 		if (currentChunkTainted)
 		{			
 			boolean flushResult = acm.flushChunk(currentChunk);
