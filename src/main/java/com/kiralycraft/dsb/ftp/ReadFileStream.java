@@ -16,16 +16,17 @@ public class ReadFileStream extends InputStream {
 
     @Override
     public int read() throws IOException {
-        return this.newFile.read();
+    	int toReturn = this.newFile.read();
+        return toReturn;
     }
 
-    @Override
-    public int read(byte[] b) throws IOException {
-        return this.newFile.read(b);
-    }
-
-    @Override
-    public int read(byte[] b, int off, int len) throws IOException {
-        return this.newFile.read(b, off, len);
-    }
+//    @Override
+//    public int read(byte[] b) throws IOException {
+//        return this.newFile.read(b);
+//    }
+//
+//    @Override
+//    public int read(byte[] b, int off, int len) throws IOException {
+//        return this.newFile.read(b, off, len);
+//    }
 }

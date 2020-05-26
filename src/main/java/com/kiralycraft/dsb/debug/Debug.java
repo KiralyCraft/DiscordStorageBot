@@ -31,8 +31,9 @@ public class Debug extends ListenerAdapter
     public static final long guildID = 713822278307282984L;
     public static final long channelID = 714569408890273802L;
     public static List<JDA> jdaList = new ArrayList<>();
+	public static int BOT_LINGER = 500;
 
-    public static int bufferSize = 65535;
+    public static int bufferSize = 4;
 
     public Debug() throws Exception
     {
@@ -60,7 +61,7 @@ public class Debug extends ListenerAdapter
 
     public static void main(String[] args) throws Exception
     {
-    	
+    	BOT_LINGER = Integer.parseInt(args[0]);
         new Debug();
     }
 
@@ -85,7 +86,7 @@ public class Debug extends ListenerAdapter
                 DiscordBasedIO discordBasedIO = new DiscordBasedIO();
                 AbstractChunkManager acm = new SingleThreadedChunkManager(discordBasedIO);
                 TextBasedFilesystem tbf = new TextBasedFilesystem(acm, null);
-//                TextBasedFilesystem tbf = new TextBasedFilesystem(acm, new EntityID(guildID,channelID,714919794779881573L));
+//                TextBasedFilesystem tbf = new TextBasedFilesystem(acm, new EntityID(guildID,channelID,714961197106987019L));
 
                 TextBasedFilesystemFTPIO fs = new TextBasedFilesystemFTPIO(acm, tbf);
                 // Creates a noop authenticator, which allows anonymous authentication

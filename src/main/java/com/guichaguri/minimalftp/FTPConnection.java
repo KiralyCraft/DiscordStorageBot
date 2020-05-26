@@ -589,7 +589,6 @@ public class FTPConnection implements Closeable {
 
         try {
             line = reader.readLine();
-            System.out.println(line);
         } catch (SocketTimeoutException ex) {
             // Check if the socket has timed out
             if (!dataConnections.isEmpty() && (System.currentTimeMillis() - lastUpdate) >= timeout) {
