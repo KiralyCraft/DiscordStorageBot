@@ -56,7 +56,6 @@ public class DiscordBasedIO implements FileIOInterface {
     @Override
     public boolean updateRawChunkData(EntityID eid, String newData) throws IOException 
     {
-    	System.out.println("Flushing chunk");
     	try
     	{
     		getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), newData).complete();
