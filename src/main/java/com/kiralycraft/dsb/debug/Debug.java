@@ -62,8 +62,16 @@ public class Debug extends ListenerAdapter
 
     public static void main(String[] args) throws Exception
     {
-    	BOT_LINGER = Integer.parseInt(args[0]);
-    	BOT_LINGER_TIMEFRAME_SYNC = Double.parseDouble(args[1]);
+    	if (args.length == 2)
+    	{
+	    	BOT_LINGER = Integer.parseInt(args[0]);
+	    	BOT_LINGER_TIMEFRAME_SYNC = Double.parseDouble(args[1]);
+    	}
+    	else
+    	{
+    		BOT_LINGER = 500;
+    		BOT_LINGER_TIMEFRAME_SYNC = 0.5;
+    	}
         new Debug();
     }
 

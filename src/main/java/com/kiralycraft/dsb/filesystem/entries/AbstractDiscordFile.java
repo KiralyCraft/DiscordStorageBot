@@ -93,8 +93,8 @@ public abstract class AbstractDiscordFile
 		posInCurrentChunk++;
 		if (posInCurrentChunk >= acm.getMaxChunkByteSize())
 		{
-			flush(true);
 			moveToNextChunk();
+			flushBaseChunk();//The current chunk is flushed anyway
 			passedChunks++;
 			posInCurrentChunk = Chunk.getDataOffset();
 		}
@@ -112,8 +112,8 @@ public abstract class AbstractDiscordFile
 			Chunk newChunk = acm.allocateChunk();
 			currentChunk.setNext(newChunk.getID());
 			newChunk.setPrevious(currentChunk.getID());
-			acm.flushChunk(currentChunk);
-			acm.flushChunk(newChunk);
+			acm.flushChunk(currentChunk); //Flush the current chunk
+			acm.flushChunk(newChunk); //And the next one
 
 			currentChunk = newChunk;
 		}

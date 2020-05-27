@@ -56,6 +56,7 @@ public class DiscordBasedIO implements FileIOInterface {
     @Override
     public boolean updateRawChunkData(EntityID eid, String newData) throws IOException 
     {
+    	System.out.println("Flushing chunk");
     	try
     	{
     		getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), newData).complete();
@@ -138,7 +139,7 @@ public class DiscordBasedIO implements FileIOInterface {
 	        else
 	        {
 	        	System.out.println("Predicted JDA does not correspond to actual JDA. Attempt #"+attemptCount+", linger: "+Debug.BOT_LINGER+" ms"+". Sync: "+(currentTimeNow -synchronizationTime));
-//	        	getChannel(predictedJDA).deleteMessageById(message.getIdLong()).queue();
+	        	getChannel(predictedJDA).deleteMessageById(message.getIdLong()).queue();
 	        }
 	        attemptCount++;
     	}
