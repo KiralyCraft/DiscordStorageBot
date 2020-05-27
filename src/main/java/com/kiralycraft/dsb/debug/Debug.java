@@ -1,24 +1,27 @@
 package com.kiralycraft.dsb.debug;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import javax.annotation.Nonnull;
+
 import com.guichaguri.minimalftp.FTPServer;
 import com.guichaguri.minimalftp.impl.NoOpAuthenticator;
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
 import com.kiralycraft.dsb.chunks.SingleThreadedChunkManager;
+import com.kiralycraft.dsb.encoder.Base64Encoder;
 import com.kiralycraft.dsb.filesystem.TextBasedFilesystem;
 import com.kiralycraft.dsb.ftp.TextBasedFilesystemFTPIO;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-
-import javax.annotation.Nonnull;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 public class Debug extends ListenerAdapter {
     public static final long guildID = 713822278307282984L;
@@ -95,7 +98,8 @@ public class Debug extends ListenerAdapter {
             public void run() {
                 //FileBasedIO fbio = new FileBasedIO();
                 DiscordEmbedIO discordBasedIO = new DiscordEmbedIO();
-                AbstractChunkManager acm = new SingleThreadedChunkManager(discordBasedIO);
+                Base64Encoder b64e = new Base64Encoder();
+                AbstractChunkManager acm = new SingleThreadedChunkManager(discordBasedIO,b64e);
 //                TextBasedFilesystem tbf = new TextBasedFilesystem(acm, null);
                 TextBasedFilesystem tbf = new TextBasedFilesystem(acm, null);
 

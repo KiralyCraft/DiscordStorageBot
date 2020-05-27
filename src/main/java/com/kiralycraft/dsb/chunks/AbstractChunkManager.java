@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.logging.Level;
 
+import com.kiralycraft.dsb.encoder.EncoderInterface;
 import com.kiralycraft.dsb.entities.Chunk;
 import com.kiralycraft.dsb.entities.EntityID;
 import com.kiralycraft.dsb.filesystem.FileIOInterface;
@@ -18,11 +19,13 @@ public abstract class AbstractChunkManager
 {
 	private FileIOInterface fioi;
 	private int maxChunkSizeBytes;
-
-	public AbstractChunkManager(FileIOInterface fioi)
+	private EncoderInterface encoderInterface;
+	
+	public AbstractChunkManager(FileIOInterface fioi, EncoderInterface ei)
 	{
 		this.fioi = fioi;
-		maxChunkSizeBytes = (3 * (fioi.getChunkSize() / 4)) - 2; //2 is the max number of padding = put the at end of any base64 string. There can be at most 2
+		this.encoderInterface = ei;
+		maxChunkSizeBytes = encoderInterface.getMaxChunkBytes(fioi.getChunkSize());
 	}
 	
 	/**
@@ -39,7 +42,7 @@ public abstract class AbstractChunkManager
 		try
 		{
 			String chunkData = fioi.getRawChunkData(id).trim();
-			byte[] chunkByteData = Base64.getDecoder().decode(chunkData);				
+			byte[] chunkByteData = 	encoderInterface.decodeData(chunkData);
 			return new Chunk(id, chunkByteData);
 		}
 		catch(IllegalArgumentException iae)
@@ -65,7 +68,7 @@ public abstract class AbstractChunkManager
 		try
 		{			
 			byte[] chunkByteData = chunk.getChunkData();
-			return fioi.updateRawChunkData(chunk.getID(),encodeChunkData(chunkByteData));
+			return fioi.updateRawChunkData(chunk.getID(),encoderInterface.encodeData(chunkByteData));
 		}
 		catch(IOException e)
 		{
@@ -86,7 +89,7 @@ public abstract class AbstractChunkManager
 		try
 		{
 			byte[] chunkByteData = new byte[getMaxChunkByteSize()];
-			EntityID chunkID = fioi.createEmptyChunk(encodeChunkData(chunkByteData));
+			EntityID chunkID = fioi.createEmptyChunk(encoderInterface.encodeData(chunkByteData));
 			Chunk toReturn = new Chunk(chunkID, chunkByteData);
 			if (chunkID!=null)
 			{
@@ -114,14 +117,5 @@ public abstract class AbstractChunkManager
 	public int getMaxChunkByteSize()
 	{
 		return maxChunkSizeBytes;		
-	}
-	
-	/**
-	 * This is a helper method for encoding the supplied data in a format supported by the Chunk filesystem
-	 * @return
-	 */
-	private String encodeChunkData(byte[] chunkByteData)
-	{
-		return Base64.getEncoder().encodeToString(chunkByteData);
 	}
 }
