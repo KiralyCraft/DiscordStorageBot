@@ -9,12 +9,11 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class DiscordBasedIO implements FileIOInterface {
+public class DiscordMessageIO implements FileIOInterface {
 
-	
     int currJDA = 0;
 
-    public DiscordBasedIO() {
+    public DiscordMessageIO() {
 
     }
 
@@ -30,7 +29,7 @@ public class DiscordBasedIO implements FileIOInterface {
       	return (System.currentTimeMillis()-1420070400000L) << 22;
   	}
     public JDA getJDA(long snowflakeID) {
-        int ID = (int) ((getMillisFromID(snowflakeID) / Debug.BOT_LINGER) % Debug.jdaList.size());
+        int ID = (int) ((getMillisFromID(snowflakeID) / 1000) % Debug.jdaList.size());
         JDA jda = Debug.jdaList.get(ID);
         return jda;
     }
@@ -76,7 +75,7 @@ public class DiscordBasedIO implements FileIOInterface {
     				getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), newData).complete(); //Complete, pentru ca vrem try catch
     				actualJDA = correctionJDA;
     				break;
-    			} //get JDA with random and checked list
+    			}
     			catch(Exception e2)
     			{
     				;//Nothing, ignore error
@@ -103,54 +102,29 @@ public class DiscordBasedIO implements FileIOInterface {
     	int attemptCount = 0;
     	while(true)
     	{
-    		long predictedSnowFlake;
-    		long synchronizationTime = System.currentTimeMillis();
-    		while(true)
-    		{
-    			predictedSnowFlake = getNewSnowflake();
-    			if (getMillisFromID(predictedSnowFlake) % Debug.BOT_LINGER < (Debug.BOT_LINGER*Debug.BOT_LINGER_TIMEFRAME_SYNC))
-    			{
-    				break;
-    			}
-    			else
-    			{
-    				try
-					{
-						Thread.sleep(1);
-					} 
-    				catch (InterruptedException e)
-					{}
-    			}
-    		}
-    		long currentTimeNow = getMillisFromID(predictedSnowFlake);
-    		
+    		long predictedSnowFlake = getNewSnowflake();
 	    	JDA predictedJDA = getJDA(predictedSnowFlake);
 	        Message message = getChannel(predictedJDA).sendMessage(emptyChunkDate).complete();
 	        if (getJDA(message.getIdLong()).equals(predictedJDA))
 	        {
-//	        	System.out.println("Creating chunk ID: "+message.getIdLong()+" with JDA "+getJDAIndex(predictedJDA));
-	        	long creationTime = getMillisFromID(message.getIdLong());
-	        	
-	        	System.out.println("PredictedJDA corresponds to actual JDA. Attempt #"+attemptCount+", linger: "+Debug.BOT_LINGER+", calculated: "+(creationTime-currentTimeNow)+". Sync: "+(currentTimeNow -synchronizationTime));
+	        	System.out.println("PredictedJDA corresponds to actual JDA. Attempt #"+attemptCount);
 	        	chosenID = new EntityID(Debug.getGuildID(), Debug.getChannelID(), message.getIdLong());
 	        	break;
 	        }
 	        else
 	        {
-	        	System.out.println("Predicted JDA does not correspond to actual JDA. Attempt #"+attemptCount+", linger: "+Debug.BOT_LINGER+" ms"+". Sync: "+(currentTimeNow -synchronizationTime));
+	        	System.out.println("Predicted JDA does not correspond to actual JDA. Attempt #"+attemptCount);
 	        	getChannel(predictedJDA).deleteMessageById(message.getIdLong()).queue();
 	        }
 	        attemptCount++;
     	}
         return chosenID;
     }
-    
-    public int getJDAIndex(JDA jda)
-    {
-    	return Debug.jdaList.indexOf(jda);
-    }
-    
-    public static TextChannel getChannel(JDA jdacurr) 
+
+
+  
+
+	public static TextChannel getChannel(JDA jdacurr) 
     {
         return jdacurr.getGuildById(Debug.guildID).getTextChannelById(Debug.channelID);
     }

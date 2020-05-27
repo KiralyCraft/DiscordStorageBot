@@ -19,9 +19,61 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="020a64ad-b535-4cd6-a242-1b43aaa29e91" name="Default Changelist" comment="Discord Integration and alpha version workingvr">
+    <list default="true" id="03d6a193-5b91-45ad-8fc8-2e3e123c1605" name="Default Changelist" comment="Discord Integration and alpha version workingvr">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/kiralycraft/dsb/debug/DiscordMessageIO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__aopalliance_aopalliance_1_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_jaxrs_jackson_jaxrs_base_2_10_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_jaxrs_jackson_jaxrs_json_provider_2_10_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_jaxb_annotations_2_10_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_errorprone_error_prone_annotations_2_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_failureaccess_1_0_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_28_1_jre.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_listenablefuture_9999_0_empty_to_avoid_conflict_with_guava.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_inject_guice_4_2_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_j2objc_j2objc_annotations_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_2_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_activation_jakarta_activation_api_1_2_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_annotation_jakarta_annotation_api_1_3_5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_validation_jakarta_validation_api_2_0_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_ws_rs_jakarta_ws_rs_api_2_1_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_xml_bind_jakarta_xml_bind_api_2_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__javax_inject_javax_inject_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpclient_4_5_10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpcore_4_4_12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpmime_4_5_10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_checkerframework_checker_qual_2_8_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_mojo_animal_sniffer_annotations_1_18.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_grizzly_grizzly_framework_2_4_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_grizzly_grizzly_http_2_4_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_grizzly_grizzly_http_server_2_4_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_hk2_external_aopalliance_repackaged_2_6_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_hk2_external_jakarta_inject_2_6_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_hk2_hk2_api_2_6_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_hk2_hk2_locator_2_6_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_hk2_hk2_utils_2_6_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_hk2_osgi_resource_locator_1_0_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jersey_containers_jersey_container_grizzly2_http_2_29_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jersey_core_jersey_client_2_29_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jersey_core_jersey_common_2_29_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jersey_core_jersey_server_2_29_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jersey_ext_jersey_entity_filtering_2_29_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jersey_inject_jersey_hk2_2_29_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jersey_media_jersey_media_jaxb_2_29_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jersey_media_jersey_media_json_jackson_2_29_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_javassist_javassist_3_22_0_CR2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_json_json_20180813.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_telegram_telegrambots_4_8_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_telegram_telegrambots_meta_4_8_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DiscordStorageBot/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordStorageBot/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kiralycraft/dsb/debug/Debug.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kiralycraft/dsb/debug/Debug.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kiralycraft/dsb/debug/DiscordBasedIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kiralycraft/dsb/debug/DiscordEmbedIO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kiralycraft/dsb/debug/UnicodeDebug.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kiralycraft/dsb/debug/UnicodeDebug.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,19 +110,27 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/DiscordStorageBot/src/main/java" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="create.test.in.the.same.root" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\pintu\IdeaProjects\DiscordStorageBot" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.kiralycraft.dsb.debug" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\pintu\IdeaProjects\DiscordStorageBot\DiscordStorageBot\src\main\java" />
     </key>
   </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
+      <command value="mvn clean" />
       <command value="mvn clean package" />
     </option>
   </component>
@@ -99,7 +159,7 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="020a64ad-b535-4cd6-a242-1b43aaa29e91" name="Default Changelist" comment="" />
+      <changelist id="03d6a193-5b91-45ad-8fc8-2e3e123c1605" name="Default Changelist" comment="" />
       <created>1590435738966</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -134,46 +194,70 @@
     <option name="LAST_COMMIT_MESSAGE" value="Discord Integration and alpha version workingvr" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1590601935031">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590601935031" />
     <state x="574" y="118" key="#com.intellij.ide.util.MemberChooser" timestamp="1590437555733">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="574" y="118" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590437555733" />
-    <state x="492" y="101" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog" timestamp="1590435765867">
+    <state x="498" y="202" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1590601894418">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="492" y="101" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590435765867" />
-    <state width="1493" height="236" key="GridCell.Tab.0.bottom" timestamp="1590514220402">
+    <state x="498" y="202" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590601894418" />
+    <state x="492" y="101" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog" timestamp="1590599306253">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="236" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590514220402" />
-    <state width="1493" height="236" key="GridCell.Tab.0.center" timestamp="1590514220402">
+    <state x="492" y="101" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590599306253" />
+    <state x="319" y="0" key="CommitChangelistDialog2" timestamp="1590605576440">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="236" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590514220402" />
-    <state width="1493" height="236" key="GridCell.Tab.0.left" timestamp="1590514220402">
+    <state x="319" y="0" key="CommitChangelistDialog2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590605576440" />
+    <state x="549" y="153" key="FileChooserDialogImpl" timestamp="1590601901153">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="236" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590514220402" />
-    <state width="1493" height="236" key="GridCell.Tab.0.right" timestamp="1590514220402">
+    <state x="549" y="153" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590601901153" />
+    <state width="1493" height="236" key="GridCell.Tab.0.bottom" timestamp="1590605029910">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="236" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590514220402" />
+    <state width="1493" height="236" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590605029910" />
+    <state width="1493" height="236" key="GridCell.Tab.0.center" timestamp="1590605029909">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="236" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590605029909" />
+    <state width="1493" height="236" key="GridCell.Tab.0.left" timestamp="1590605029909">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="236" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590605029909" />
+    <state width="1493" height="236" key="GridCell.Tab.0.right" timestamp="1590605029910">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="236" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590605029910" />
     <state x="299" y="67" key="Maven.ArtifactSearchDialog" timestamp="1590435923824">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="299" y="67" key="Maven.ArtifactSearchDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590435923824" />
+    <state x="249" y="0" key="SettingsEditor" timestamp="1590601743660">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="249" y="0" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590601743660" />
     <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1590514531514">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590514531514" />
+    <state x="540" y="110" key="com.intellij.testIntegration.createTest.CreateTestDialog" timestamp="1590602080345">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="540" y="110" key="com.intellij.testIntegration.createTest.CreateTestDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590602080344" />
     <state x="478" y="145" width="579" height="534" key="find.popup" timestamp="1590506868928">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="478" y="145" width="579" height="534" key="find.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590506868928" />
-    <state x="425" y="187" width="672" height="677" key="run.anything.popup" timestamp="1590507647247">
+    <state x="425" y="187" width="672" height="677" key="run.anything.popup" timestamp="1590604953256">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="425" y="187" width="672" height="677" key="run.anything.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590507647247" />
+    <state x="425" y="187" width="672" height="677" key="run.anything.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1590604953256" />
     <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1590454359532">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
