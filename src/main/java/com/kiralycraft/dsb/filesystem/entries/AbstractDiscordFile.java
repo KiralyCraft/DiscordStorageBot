@@ -63,6 +63,7 @@ public abstract class AbstractDiscordFile
 		if (!isEOF) // If a previous read returned a number of bytes, and the EOF is reached, this
 					// method WILL be called again
 		{
+//			System.out.println("Chunk length: "+currentChunk.getChunkData().length+", current pos: "+posInCurrentChunk+". Expected size: "+acm.getMaxChunkByteSize());
 			int toReturn = currentChunk.getChunkData()[posInCurrentChunk];
 			if (toReturn < 0)
 			{

@@ -209,7 +209,7 @@ public class FileHandler {
         Object file = getFile(path);
 
         con.sendResponse(150, "Sending the file stream for " + path + " (" + fs.getSize(file) + " bytes)");
-        sendStream(Utils.readFileSystem(fs, file, start, con.isAsciiMode()));
+    	sendStream(Utils.readFileSystem(fs, file, start, con.isAsciiMode()));
         start = 0;
     }
 
@@ -467,6 +467,7 @@ public class FileHandler {
             } catch(ResponseException ex) {
                 con.sendResponse(ex.getCode(), ex.getMessage());
             } catch(Exception ex) {
+            	ex.printStackTrace();
                 con.sendResponse(451, ex.getMessage());
             }
         }).start();
@@ -485,6 +486,7 @@ public class FileHandler {
                 con.sendResponse(ex.getCode(), ex.getMessage());
             } catch(Exception ex) {
                 con.sendResponse(451, ex.getMessage());
+                ex.printStackTrace();
             }
         }).start();
     }

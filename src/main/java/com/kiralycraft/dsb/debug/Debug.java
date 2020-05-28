@@ -35,11 +35,11 @@ public class Debug extends ListenerAdapter {
     public static double BOT_LINGER_TIMEFRAME_SYNC = 0.5;
 
     public Debug() throws Exception {
-        buildJDAList(jdaList, this,2);
+        buildJDAList(jdaList, this);
     }
 
     public static void buildJDAList(List<JDA> jdaList2, ListenerAdapter la) throws Exception {
-        buildJDAList(jdaList2, la, -1);
+        buildJDAList(jdaList2, la, 2);
     }
 
     public static void buildJDAList(List<JDA> jdaList2, ListenerAdapter la, int botCount) throws Exception {

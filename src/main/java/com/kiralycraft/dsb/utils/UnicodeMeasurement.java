@@ -23,9 +23,7 @@ public class UnicodeMeasurement
 				int ch = toString.codePointAt(i);
 				actualLength++;
 				i += Character.charCount(ch);
-			} while (i < newContent.length());
-	
-			System.out.println("Actual length: " + actualLength + "; Java lentgh: " + newContent.length()); // FIXED
+			} while (i < newContent.length()); //FIXED
 			return actualLength;
 		}
 	}
