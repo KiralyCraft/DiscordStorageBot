@@ -28,21 +28,21 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 public class Debug extends ListenerAdapter {
     public static final long guildID = 713822278307282984L;
     public static final long channelID = 714569408890273802L;
-    public static List<JDA> jdaList = new ArrayList<>();
     public static int BOT_LINGER = 500;
 
-    public static int bufferSize = 65535;
+    public static int bufferSize = 4;
     public static double BOT_LINGER_TIMEFRAME_SYNC = 0.5;
+	public static List<JDA> jdaList = new ArrayList<JDA>();
 
     public Debug() throws Exception {
-        buildJDAList(jdaList, this);
+        buildJDAList(jdaList , this);
     }
 
-    public static void buildJDAList(List<JDA> jdaList2, ListenerAdapter la) throws Exception {
-        buildJDAList(jdaList2, la, 2);
+    public static void buildJDAList(List<JDA> jdaList, ListenerAdapter la) throws Exception {
+        buildJDAList(jdaList, la, 5);
     }
 
-    public static void buildJDAList(List<JDA> jdaList2, ListenerAdapter la, int botCount) throws Exception {
+    public static void buildJDAList(List<JDA> jdaList, ListenerAdapter la, int botCount) throws Exception {
         Scanner scan = new Scanner(new File("discordtokens.txt"));
 
         ArrayList<JDABuilder> pendingBuilders = new ArrayList<JDABuilder>();

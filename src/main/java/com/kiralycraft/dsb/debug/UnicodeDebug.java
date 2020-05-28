@@ -1,12 +1,13 @@
 package com.kiralycraft.dsb.debug;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 
+import com.kiralycraft.dsb.encoder.EncoderInterface;
+import com.kiralycraft.dsb.encoder.HexEncoder;
 import com.kiralycraft.dsb.encoder.UnicodeHexEncoder;
+import com.kiralycraft.dsb.entities.EntityID;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.ReadyEvent;
@@ -14,36 +15,40 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class UnicodeDebug extends ListenerAdapter
 {
-	private static ArrayList<JDA> jdaList = new ArrayList<JDA>();
 	public static void main(String args[]) throws Exception
 	{
-		UnicodeHexEncoder uhe = new UnicodeHexEncoder();
+		//149,192
 		
-		int progress = 0;
-		for (int i=0;i<256;i++)
-		{
-			for (int j=0;j<256;j++)
-			{
-				byte[] expectedData = new byte[] {(byte) i,(byte) j};
-				byte[] receivedData = uhe.decodeData(uhe.encodeData(expectedData));
-				
-				for (int check=0;check<expectedData.length;check++)
-				{
-					if (expectedData[check]!=receivedData[check])
-					{
-						System.out.println("Check failed! Expected "+i+","+j+" but got "+receivedData[0]+", "+receivedData[1]);
-						return;
-					}
-				}
-				progress++;
-				
-				if (progress%1000 == 0)
-				{
-					System.out.println("Progress: "+(progress/(256*256d))*100d+" %");
-				}
-			}
-		}
-		System.out.println();
+		Debug.buildJDAList(Debug.jdaList,new UnicodeDebug(),5);
+		
+		
+		
+		
+//		
+//		int progress = 0;
+//		for (int i=0;i<256;i++)
+//		{
+//			for (int j=0;j<256;j++)
+//			{
+//				byte[] expectedData = new byte[] {(byte) i,(byte) j};
+//				byte[] receivedData = uhe.decodeData(uhe.encodeData(expectedData));
+//				
+//				for (int check=0;check<expectedData.length;check++)
+//				{
+//					if (expectedData[check]!=receivedData[check])
+//					{
+//						System.out.println("Check failed! Expected "+i+","+j+" but got "+receivedData[0]+", "+receivedData[1]);
+//						return;
+//					}
+//				}
+//				progress++;
+//				
+//				if (progress%1000 == 0)
+//				{
+//					System.out.println("Progress: "+(progress/(256*256d))*100d+" %");
+//				}
+//			}
+//		}
 //		final char[] chars = Character.toChars(0x20000);
 //		final char[] chars = Character.toChars(0x2A6D6);
 //		System.out.println(new String(chars).length());
@@ -144,62 +149,104 @@ public class UnicodeDebug extends ListenerAdapter
 	   
 	   
 //	    System.out.println(Integer.toHexString(255));
-//		Debug.buildJDAList(jdaList,new UnicodeDebug(),2);
 		
 	}
 	
 	@Override
     public void onReady(@Nonnull ReadyEvent event) {
-        new Thread("Broccoli") {
-            public void run() 
-            {
-            	
-            	DiscordMessageIO dbio = new DiscordMessageIO();
-            	
-            	final char[] chars = Character.toChars(0xFE01);
-        		final String s = new String(chars);
-        		final byte[] asBytes = s.getBytes(StandardCharsets.UTF_8);
-        		
-        		int codePoint = Character.codePointAt(s, 0);
-        		System.out.println(Integer.toHexString(codePoint));
-        		
-//    			for (int i=0;i<=255;i++)
-//    			{
-//    				for (int j=0;j<=255;j++)
-//    				{
-//    					String hexString = hexToDoubleHex(Integer.toHexString(i))+hexToDoubleHex(Integer.toHexString(j));
-//    					System.out.println("Trying "+hexString);
-    					try
+		
+		try
+		{
+//			UnicodeHexEncoder uhe = new UnicodeHexEncoder();
+//			
+//			byte[] expectedData = new byte[] {-107,-63};
+//			System.out.println("Supplied "+expectedData.length+" "+expectedData[0]+" "+expectedData[1]);
+//			DiscordMessageIO dbio = new DiscordMessageIO();
+//			EntityID ourID = dbio.createEmptyChunk("CHARACTER TEST");
+//			dbio.updateRawChunkData(ourID,uhe.encodeData(expectedData));
+//			
+//			byte[] receivedData = uhe.decodeData(dbio.getRawChunkData(ourID));
+//			
+//			System.out.println(receivedData.length+" "+receivedData[0]+" "+receivedData[1]);
+			
+			
+			//TESTING ABOVE
+			//TESTING ABOVE
+			//TESTING ABOVE
+			//TESTING ABOVE
+			//TESTING ABOVE
+			
+			
+	    	EncoderInterface uhe = new UnicodeHexEncoder();
+	    	DiscordMessageIO dbio = new DiscordMessageIO();
+	    	int charactersAtOnce = 128; //128
+	    	int checkPoint = 59200-10; //590
+	    	int progress=0;
+			dbio.createEmptyChunk("```CHARACTER TEST IN PROGRESS AT "+System.currentTimeMillis()+"```");
+			
+			ArrayList<EntityID> testingIDS = new ArrayList<EntityID>();
+			for(int i=0;i<Debug.jdaList.size();i++)
+			{
+				System.out.println("Adding test message for JDA "+i);
+				testingIDS.add(dbio.createEmptyChunk("CHARACTER TEST"));
+			}
+			
+			for (int i=0;i<=255;i++)
+			{
+				System.out.println("Checking i ="+i);
+				for (int j=0;j<=255;j+=charactersAtOnce/2)
+				{
+					if (progress < checkPoint-1 - charactersAtOnce/2)
+					{
+						progress+=charactersAtOnce/2;
+					}
+					else
+					{
+	//					(byte) i,(byte) j
+						byte[] expectedData = new byte[charactersAtOnce];
+						for (int k=0;k<charactersAtOnce;k+=2)
 						{
-//							dbio.createEmptyChunk(String.valueOf(Character.toChars(Integer.parseInt(hexString, 16))));
-    						byte[] retreivedBytes = dbio.getRawChunkData(dbio.createEmptyChunk(s)).getBytes(Charset.forName("UTF-8"));
-    						
-    						if (asBytes.length == retreivedBytes.length)
-    						{
-    							for (int i=0;i<asBytes.length;i++)
-    							{
-    								if (asBytes[i] != retreivedBytes[i])
-    								{
-    									System.out.println("Discrepancy detected!");
-    								}
-    							}
-    							
-    							System.out.println("Check done");
-    						}
-    						else
-    						{
-    							System.out.println("Different length: "+asBytes.length+" - "+retreivedBytes.length);
-    						}
-    						
-						} 
-    					catch (Exception e)
-    					{
-    						e.printStackTrace();
-    					}
-//    				}
-//    			}
-            }
-        }.start();
+							expectedData[k] = (byte) i;
+							expectedData[k+1] = (byte) (j+k/2);
+						}
+//						System.out.println("Sending message...");
+						EntityID ourID = testingIDS.get(progress%Debug.jdaList.size());
+						
+						dbio.updateRawChunkData(ourID,uhe.encodeData(expectedData));
+		//    					dbio.createEmptyChunk(uhe.encodeData(expectedData));
+						
+						byte[] receivedData = uhe.decodeData(dbio.getRawChunkData(ourID));
+						
+						for (int check=0;check<expectedData.length;check++)
+						{
+							if (expectedData[check]!=receivedData[check])
+							{
+								System.out.println("Check failed! Expected "+i+","+j+" but got "+receivedData[0]+", "+receivedData[1]+". Lenghts: "+expectedData.length+","+receivedData.length);
+								
+								for (int p = 0;p<expectedData.length;p++)
+								{
+									System.out.println(expectedData[p]+";"+receivedData[p]);
+								}
+								return;
+							}
+						}
+						progress+=charactersAtOnce/2;
+//						System.out.println("Done!");
+						if (progress%10 == 0)
+						{
+							System.out.println("Progress: "+(progress/(256*256d))*100d+" % - Checkpoint "+progress+". Sleeping 50 ms for heartbeat; "+i+" "+j);
+							Thread.sleep(50);
+						}
+					}
+					
+					
+				}
+			}
+			System.out.println("All done!");
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
     }
 	
 	public static String hexToDoubleHex(String hex)

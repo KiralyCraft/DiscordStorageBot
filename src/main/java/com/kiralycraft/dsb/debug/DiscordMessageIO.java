@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class DiscordMessageIO implements FileIOInterface
 {
-
+	private final String PADDING = "F";
 	int currJDA = 0;
 
 	public DiscordMessageIO()
@@ -45,7 +45,7 @@ public class DiscordMessageIO implements FileIOInterface
 	@Override
 	public int getChunkSize()
 	{
-		return 1998;
+		return 2000-(PADDING.length()*2);
 	}
 
 	public long getMillisFromID(long snowflake)
@@ -60,7 +60,7 @@ public class DiscordMessageIO implements FileIOInterface
 		if (message != null)
 		{
 			String rawContent = message.getContentRaw();
-			return rawContent.substring(1, rawContent.length() - 1);
+			return rawContent.substring(PADDING.length(), rawContent.length() - PADDING.length());
 		}
 		throw new IOException("Message not found " + eid.getLoggableID());
 	}
@@ -70,7 +70,7 @@ public class DiscordMessageIO implements FileIOInterface
 	{
 		try
 		{
-			getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), "G" + newData + "G").complete();
+			getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), PADDING + newData + PADDING).complete();
 			return true;
 		} catch (Exception e)
 		{
@@ -87,7 +87,7 @@ public class DiscordMessageIO implements FileIOInterface
 				try
 				{
 					System.err.println("Trying JDA " + (currentIndex + 1) + "/" + jdaCount);
-					getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), "G" + newData + "G")
+					getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), PADDING + newData + PADDING)
 							.complete(); // Complete, pentru ca vrem try catch
 					actualJDA = correctionJDA;
 					break;
@@ -136,12 +136,12 @@ public class DiscordMessageIO implements FileIOInterface
 				}
 			}
 			long currentTimeNow = getMillisFromID(predictedSnowFlake);
+			currentTimeNow+=(currentTimeNow-synchronizationTime);
 
 			JDA predictedJDA = getJDA(predictedSnowFlake);
-			Message message = getChannel(predictedJDA).sendMessage("G"+emptyChunkDate+"G").complete();
+			Message message = getChannel(predictedJDA).sendMessage(PADDING+emptyChunkDate+PADDING).complete();
 			if (getJDA(message.getIdLong()).equals(predictedJDA))
 			{
-// 	        	System.out.println("Creating chunk ID: "+message.getIdLong()+" with JDA "+getJDAIndex(predictedJDA));
 				long creationTime = getMillisFromID(message.getIdLong());
 
 				System.out.println("PredictedJDA corresponds to actual JDA. Attempt #" + attemptCount + ", linger: "+ Debug.BOT_LINGER + ", calculated: " + (creationTime - currentTimeNow) + ". Sync: "+ (currentTimeNow - synchronizationTime));

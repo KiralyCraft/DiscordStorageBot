@@ -183,7 +183,7 @@ public class UnicodeHexEncoder implements EncoderInterface
 	
 	public int getUnicodeIndex(int codepoint)
 	{
-		//System.out.print("Fetching unicode index from codepoint "+codepoint+"; Exists: "+unicodeMemory.containsKey(codepoint)+", index ");
+//		System.out.print("Fetching unicode index from codepoint "+codepoint+"; Exists: "+unicodeMemory.containsKey(codepoint)+", index ");
 		int index = unicodeMemory.get(codepoint);
 		if (index >= unicodeCount)
 		{
@@ -200,9 +200,9 @@ public class UnicodeHexEncoder implements EncoderInterface
 		}
 		else
 		{
-			//System.out.print("Fetching unicode codepoint from index "+index+"; Exists: "+unicodeMemoryRev.containsKey(index)+", codepoint ");
+//			System.out.print("Fetching unicode codepoint from index "+index+"; Exists: "+unicodeMemoryRev.containsKey(index)+", codepoint ");
 			String resultingUnicode = new String(Character.toChars(unicodeMemoryRev.get(index)));
-			//System.out.println(resultingUnicode.codePointAt(0));
+//			System.out.println(resultingUnicode.codePointAt(0));
 			return resultingUnicode;
 		}
 	}
