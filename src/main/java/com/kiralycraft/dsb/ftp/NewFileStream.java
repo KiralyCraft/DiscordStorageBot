@@ -8,13 +8,16 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class NewFileStream extends OutputStream {
+public class NewFileStream extends OutputStream 
+{
     protected long bytesTransferred = 0;
     long lastTime = System.currentTimeMillis();
     long bytesSent = 0;
     private MetadataDiscordFile newFile;
     private TextBasedFilesystem tbf;
-
+    double averageSpeed;
+    int speedMeasurepoints;
+    
     public NewFileStream(AbstractChunkManager acm, String filename, TextBasedFilesystem tbf) {
         System.out.println("Writing the file " + filename + " to folder " + tbf.getCurrentPath());
         this.newFile = new MetadataDiscordFile(acm, filename, false, 0); //Initial size is 0 bytes
@@ -22,14 +25,17 @@ public class NewFileStream extends OutputStream {
     }
 
     @Override
-    public void write(@NotNull byte[] bytes, int i, int i1) throws IOException {
+    public void write(@NotNull byte[] bytes, int i, int i1) throws IOException 
+    {
         super.write(bytes, i, i1);
         long timeMeasurementNow = System.currentTimeMillis();
         bytesSent += i1 - i;
         bytesTransferred += i1 - i;
         if (timeMeasurementNow - lastTime >= 1000) {
             double temp = (bytesSent / 1000d) / ((timeMeasurementNow - lastTime) / 1000d);
-            System.out.println("Speed: " + temp + " - BytesSent: " + bytesTransferred);
+            speedMeasurepoints++;
+            averageSpeed = averageSpeed + (temp-averageSpeed)/speedMeasurepoints;
+            System.out.println("Avg write speed: " + averageSpeed + " kb/s - BytesSent: " + bytesTransferred);
             lastTime = timeMeasurementNow;
             bytesSent = 0;
         }

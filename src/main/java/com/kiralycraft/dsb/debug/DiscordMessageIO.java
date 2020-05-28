@@ -72,7 +72,8 @@ public class DiscordMessageIO implements FileIOInterface
 		{
 			getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), PADDING + newData + PADDING).complete();
 			return true;
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.err.println("Expected JDA for messageID: " + eid.getEntityID() + " ("

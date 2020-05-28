@@ -29,7 +29,7 @@ public class Debug extends ListenerAdapter {
     public static int BOT_LINGER = 1000;
 
     public static int bufferSize = 4;
-    public static double BOT_LINGER_TIMEFRAME_SYNC = 0.5;
+    public static double BOT_LINGER_TIMEFRAME_SYNC = 0.75;
     public static List<JDA> jdaList = new ArrayList<JDA>();
 
     public Debug() throws Exception {
@@ -37,7 +37,7 @@ public class Debug extends ListenerAdapter {
     }
 
     public static void buildJDAList(List<JDA> jdaList, ListenerAdapter la) throws Exception {
-        buildJDAList(jdaList, la, 2);
+        buildJDAList(jdaList, la, 5);
     }
 
     public static void buildJDAList(List<JDA> jdaList, ListenerAdapter la, int botCount) throws Exception {

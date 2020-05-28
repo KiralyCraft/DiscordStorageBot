@@ -12,6 +12,8 @@ public class ReadFileStream extends InputStream {
     long lastTime = System.currentTimeMillis();
     long bytesSent = 0;
     private MetadataDiscordFile newFile;
+	private int speedMeasurepoints;
+	private double averageSpeed;
 
     public ReadFileStream(String filename, TextBasedFilesystem tbf) {
         System.out.println("Reading the file " + filename + " from folder " + tbf.getCurrentPath());
@@ -32,7 +34,10 @@ public class ReadFileStream extends InputStream {
         bytesTransferred += len;
         if (timeMeasurementNow - lastTime >= 1000) {
             double temp = (bytesSent / 1000d) / ((timeMeasurementNow - lastTime) / 1000d);
-            System.out.println("Speed: " + temp + " - BytesReceived: " + bytesTransferred);
+            speedMeasurepoints++;
+            averageSpeed = averageSpeed + (temp-averageSpeed)/speedMeasurepoints;
+            
+            System.out.println("Avg read speed: " + averageSpeed + " kb/s - BytesSent: " + bytesTransferred);
             lastTime = timeMeasurementNow;
             bytesSent = 0;
         }
