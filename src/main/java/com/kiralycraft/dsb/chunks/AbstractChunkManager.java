@@ -41,7 +41,7 @@ public abstract class AbstractChunkManager
 	{
 		try
 		{
-			String chunkData = fioi.getRawChunkData(id).trim();
+			String chunkData = fioi.getRawChunkData(id);
 			byte[] chunkByteData = 	encoderInterface.decodeData(chunkData);
 			return new Chunk(id, chunkByteData);
 		}

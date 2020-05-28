@@ -1,11 +1,9 @@
 package com.kiralycraft.dsb.debug;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 import com.kiralycraft.dsb.entities.EntityID;
@@ -42,20 +40,12 @@ public class FileBasedIO implements FileIOInterface
 		{
 			// Open the file
 			FileInputStream fstream = new FileInputStream(theFile);
-			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-	
-			String strLine;
-			String allRead="";
-			
-			//Read File Line By Line
-			while ((strLine = br.readLine()) != null)   
-			{
-				allRead+=strLine+"\n";
-			}
-			//Close the input stream
+			byte[] theFileByte = new byte[(int) theFile.length()];
+			fstream.read(theFileByte);
 			fstream.close();
 			
-			return allRead;
+//			debug aici, vezi daca citeste fisieru bine, al doilea chunk pare sa fie gol complet, nici macar previous nu e pus 
+			return new String(theFileByte);
 		}
 		else
 		{
