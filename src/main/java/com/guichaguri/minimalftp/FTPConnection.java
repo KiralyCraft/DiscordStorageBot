@@ -320,21 +320,10 @@ public class FTPConnection implements Closeable {
 
             byte[] buffer = new byte[bufferSize];
             int len;
-            long lastTime = System.currentTimeMillis();
-            long bytesSent = 0;
             while ((len = in.read(buffer)) != -1) {
                 out.write(buffer, 0, len);
-                bytesSent += len;
                 bytesTransferred += len;
-                long timeMeasurementNow = System.currentTimeMillis();
-                if (timeMeasurementNow - lastTime >= 1000) {
-                    double temp = (bytesSent / 1000d) / ((timeMeasurementNow - lastTime) / 1000d);
-                    System.out.println("Speed:" + temp + " - TotalSent: " + bytesTransferred);
-                    lastTime = timeMeasurementNow;
-                    bytesSent = 0;
-                }
             }
-
             out.flush();
             Utils.closeQuietly(out);
             Utils.closeQuietly(in);
