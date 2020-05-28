@@ -2,7 +2,7 @@ package com.kiralycraft.dsb.encoder;
 
 public class HexEncoder implements EncoderInterface
 {
-	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+	public static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
 	@Override
 	public int getMaxChunkBytes(int targetRepresentationSize)
