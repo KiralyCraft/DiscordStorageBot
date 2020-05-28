@@ -12,7 +12,9 @@ import com.guichaguri.minimalftp.FTPServer;
 import com.guichaguri.minimalftp.impl.NoOpAuthenticator;
 import com.kiralycraft.dsb.chunks.AbstractChunkManager;
 import com.kiralycraft.dsb.chunks.SingleThreadedChunkManager;
-import com.kiralycraft.dsb.encoder.Base64Encoder;
+import com.kiralycraft.dsb.encoder.EncoderInterface;
+import com.kiralycraft.dsb.encoder.UnicodeHexEncoder;
+import com.kiralycraft.dsb.filesystem.FileIOInterface;
 import com.kiralycraft.dsb.filesystem.TextBasedFilesystem;
 import com.kiralycraft.dsb.ftp.TextBasedFilesystemFTPIO;
 
@@ -33,7 +35,7 @@ public class Debug extends ListenerAdapter {
     public static double BOT_LINGER_TIMEFRAME_SYNC = 0.5;
 
     public Debug() throws Exception {
-        buildJDAList(jdaList, this);
+        buildJDAList(jdaList, this,2);
     }
 
     public static void buildJDAList(List<JDA> jdaList2, ListenerAdapter la) throws Exception {
@@ -97,9 +99,9 @@ public class Debug extends ListenerAdapter {
         new Thread("Broccoli") {
             public void run() {
                 //FileBasedIO fbio = new FileBasedIO();
-                DiscordEmbedIO discordBasedIO = new DiscordEmbedIO();
-                Base64Encoder b64e = new Base64Encoder();
-                AbstractChunkManager acm = new SingleThreadedChunkManager(discordBasedIO,b64e);
+                FileIOInterface fileInterface = new DiscordMessageIO();
+                EncoderInterface encoderInterface = new UnicodeHexEncoder();
+                AbstractChunkManager acm = new SingleThreadedChunkManager(fileInterface,encoderInterface);
 //                TextBasedFilesystem tbf = new TextBasedFilesystem(acm, null);
                 TextBasedFilesystem tbf = new TextBasedFilesystem(acm, null);
 

@@ -17,6 +17,8 @@ public class UnicodeHexEncoder implements EncoderInterface
 	private EncoderInterface baseEncoder;
 	private HashMap<Integer,Integer> unicodeMemory;
 	private HashMap<Integer,Integer> unicodeMemoryRev;
+	
+	private int unicodeCount;
 	private Pattern unicodePattern = Pattern.compile("([0-9A-F]*)\\s+.*");
 	
 	public UnicodeHexEncoder()
@@ -29,7 +31,7 @@ public class UnicodeHexEncoder implements EncoderInterface
 		try
 		{
 			Scanner scan = new Scanner(new FileInputStream(new File("unicodeDatabase.txt")));
-			int currentIndex = 0;
+			unicodeCount = 0;
 			while(scan.hasNext())
 			{
 				String line = scan.nextLine();
@@ -42,9 +44,9 @@ public class UnicodeHexEncoder implements EncoderInterface
 					
 //					String assertionCharacter = new String(Character.toChars(intUnicodeCodePoint)); //no more assertion, it's borked
 					
-					unicodeMemory.put(intUnicodeCodePoint,currentIndex);
-					unicodeMemoryRev.put(currentIndex,intUnicodeCodePoint);
-					currentIndex++;
+					unicodeMemory.put(intUnicodeCodePoint,unicodeCount);
+					unicodeMemoryRev.put(unicodeCount,intUnicodeCodePoint);
+					unicodeCount++;
 				}
 			}
 			System.out.println("Loaded "+unicodeMemory.size()+" unicodes");
@@ -183,15 +185,25 @@ public class UnicodeHexEncoder implements EncoderInterface
 	{
 		//System.out.print("Fetching unicode index from codepoint "+codepoint+"; Exists: "+unicodeMemory.containsKey(codepoint)+", index ");
 		int index = unicodeMemory.get(codepoint);
-		//System.out.println(index);
+		if (index >= unicodeCount)
+		{
+			new RuntimeException("Decoded Unicode index: "+index+" is larger than the current alphabe size: "+unicodeCount);
+		}
 		return index;
 	}
 	
 	private String getUnicodeNth(int index)
 	{
-		//System.out.print("Fetching unicode codepoint from index "+index+"; Exists: "+unicodeMemoryRev.containsKey(index)+", codepoint ");
-		String resultingUnicode = new String(Character.toChars(unicodeMemoryRev.get(index)));
-		//System.out.println(resultingUnicode.codePointAt(0));
-		return resultingUnicode;
+		if (index >= unicodeCount)
+		{
+			throw new RuntimeException("Requested Unicode index: "+index+" is larger than the current alphabe size: "+unicodeCount);
+		}
+		else
+		{
+			//System.out.print("Fetching unicode codepoint from index "+index+"; Exists: "+unicodeMemoryRev.containsKey(index)+", codepoint ");
+			String resultingUnicode = new String(Character.toChars(unicodeMemoryRev.get(index)));
+			//System.out.println(resultingUnicode.codePointAt(0));
+			return resultingUnicode;
+		}
 	}
 }

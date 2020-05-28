@@ -5,6 +5,7 @@ import com.kiralycraft.dsb.filesystem.FileIOInterface;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.internal.utils.Helpers;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -36,7 +37,7 @@ public class DiscordMessageIO implements FileIOInterface {
 
     @Override
     public int getChunkSize() {
-        return 2000;
+        return 1998;
     }
 
     public long getMillisFromID(long snowflake) {
@@ -47,7 +48,8 @@ public class DiscordMessageIO implements FileIOInterface {
     public String getRawChunkData(EntityID eid) throws IOException {
         Message message = getChannel(getJDA()).retrieveMessageById(eid.getEntityID()).complete();
         if (message != null) {
-            return message.getContentRaw();
+        	String rawContent = message.getContentRaw();
+            return rawContent.substring(1,rawContent.length()-1);
         }
         throw new IOException("Message not found " + eid.getLoggableID());
     }
@@ -55,13 +57,15 @@ public class DiscordMessageIO implements FileIOInterface {
     @Override
     public boolean updateRawChunkData(EntityID eid, String newData) throws IOException 
     {
+    	System.out.println("Updating size "+newData.length()+"\""+newData+"\"");
     	try
     	{
-    		getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), newData).complete();
+    		getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), "G"+newData+"G").complete();
     		return true;
     	}
     	catch(Exception e)
     	{
+    		e.printStackTrace();
     		System.err.println("Expected JDA for messageID: "+eid.getEntityID()+" ("+Debug.jdaList.indexOf(getJDA(eid.getEntityID()))+") does not correspond to the actual JDA! Attempting recover");
     		
     		JDA actualJDA = null;
@@ -72,7 +76,7 @@ public class DiscordMessageIO implements FileIOInterface {
     			try
     			{
     				System.err.println("Trying JDA "+(currentIndex+1)+"/"+jdaCount);
-    				getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), newData).complete(); //Complete, pentru ca vrem try catch
+    				getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), "G"+newData+"G").complete(); //Complete, pentru ca vrem try catch
     				actualJDA = correctionJDA;
     				break;
     			}
@@ -104,7 +108,20 @@ public class DiscordMessageIO implements FileIOInterface {
     	{
     		long predictedSnowFlake = getNewSnowflake();
 	    	JDA predictedJDA = getJDA(predictedSnowFlake);
-	        Message message = getChannel(predictedJDA).sendMessage(emptyChunkDate).complete();
+	    	
+//	    	StringBuilder testingBuilder = new StringBuilder();
+//	    	testingBuilder.append(emptyChunkDate);
+	    	
+//	    	if (Helpers.isEmpty(testingBuilder))
+//	            System.out.println("true");
+//	        for (int i = 0; i < testingBuilder.length(); i++)
+//	        {
+//	            if (!Character.isWhitespace(testingBuilder.charAt(i)))
+//	               System.out.println("not whitespace");
+//	        }
+	        
+	    	
+	        Message message = getChannel(predictedJDA).sendMessage("G"+emptyChunkDate+"G").complete();
 	        if (getJDA(message.getIdLong()).equals(predictedJDA))
 	        {
 	        	System.out.println("PredictedJDA corresponds to actual JDA. Attempt #"+attemptCount);
