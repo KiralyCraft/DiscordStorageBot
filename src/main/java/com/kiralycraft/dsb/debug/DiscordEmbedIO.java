@@ -19,10 +19,11 @@ public class DiscordEmbedIO implements FileIOInterface {
     private final int TITLE_LENGHT = 256 - 2;
     private final int VALUE_LENGHT = 1024 - 2;
     private final int DATA_MAX_LENGHT = TITLE_LENGHT + VALUE_LENGHT;
+    private final String PADDING = "F";
     int currJDA = 0;
 
     public DiscordEmbedIO() {
-
+ 
     }
 
     public static TextChannel getChannel(JDA jdacurr) {
@@ -71,23 +72,9 @@ public class DiscordEmbedIO implements FileIOInterface {
 
     @Override
     public boolean updateRawChunkData(EntityID eid, String newData) throws IOException {
-        try {
-            MessageEmbed buildEmbed = buildEmbedMessage(newData);
-            StringBuilder s = new StringBuilder();
-            for (MessageEmbed.Field field : buildEmbed.getFields()) {
-                s.append(getContentMessage(field.getName())).append(getContentMessage(field.getValue()));
-            }
-            String builtMessage = s.toString();
-            getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), buildEmbed).complete();
-            String rawChunkData = getRawChunkData(eid);
-            int rawLenght = UnicodeMeasurement.getActualLength(rawChunkData);
-            int newDataLenght = UnicodeMeasurement.getActualLength(newData);
-            if (UnicodeMeasurement.getActualLength(builtMessage) != newDataLenght) {
-                //System.out.println("Invalid something here with lenght");
-                System.out.println("[" + eid.getEntityID() + "]" + newData + "\n" + builtMessage);
-                //throw new Exception("Invalid lenght " + rawLenght + " - " + newDataLenght);
-                return true;
-            }
+        try 
+        {
+            getChannel(getJDA(eid.getEntityID())).editMessageById(eid.getEntityID(), buildEmbedMessage(newData)).complete();
             return true;
         } catch (Exception e) {
             System.err.println("Expected JDA for messageID: " + eid.getEntityID() + " (" + Debug.jdaList.indexOf(getJDA(eid.getEntityID())) + ") does not correspond to the actual JDA! Attempting recover");
@@ -163,14 +150,14 @@ public class DiscordEmbedIO implements FileIOInterface {
             String fieldTitle = subString(chunkPart, 0, TITLE_LENGHT);
             String fieldValue = subString(chunkPart, UnicodeMeasurement.getActualLength(fieldTitle), DATA_MAX_LENGHT - UnicodeMeasurement.getActualLength(fieldTitle));
             //System.out.println("buildEmbed#forloop Title lenght > " + UnicodeMeasurement.getActualLength(fieldTitle) + " - Value lenght > " + UnicodeMeasurement.getActualLength(fieldValue));
-            builder.addField("K" + fieldTitle + "K", "K" + fieldValue + "K", false);
+            builder.addField(PADDING + fieldTitle + PADDING, PADDING + fieldValue + PADDING, false);
             currentIndex += UnicodeMeasurement.getActualLength(chunkPart);
         }
         if (currentIndex < UnicodeMeasurement.getActualLength(chunkData)) {
             String fieldTitle = subString(chunkData, currentIndex, TITLE_LENGHT);
             String fieldValue = subString(chunkData, UnicodeMeasurement.getActualLength(fieldTitle) + currentIndex, UnicodeMeasurement.getActualLength(chunkData) - UnicodeMeasurement.getActualLength(fieldTitle) - currentIndex);
             //System.out.println("buildEmbed#last Title lenght > " + UnicodeMeasurement.getActualLength(fieldTitle) + " - Value lenght > " + UnicodeMeasurement.getActualLength(fieldValue));
-            builder.addField("K" + fieldTitle + "K", "K" + fieldValue + "K", false);
+            builder.addField(PADDING + fieldTitle + PADDING, PADDING + fieldValue + PADDING, false);
         }
         return builder.build();
     }
@@ -179,7 +166,8 @@ public class DiscordEmbedIO implements FileIOInterface {
         return input.substring(1, input.length() - 1);
     }
 
-    public String subString(String input, int index, int lenght) {
-        return input.substring(index, input.offsetByCodePoints(index, lenght));
+    public String subString(String input, int index, int length) 
+    {
+        return input.substring(input.offsetByCodePoints(0, index), input.offsetByCodePoints(0, index+length));
     }
 }

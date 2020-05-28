@@ -20,6 +20,7 @@ import net.dv8tion.jda.annotations.DeprecatedSince;
 import net.dv8tion.jda.annotations.ForRemoval;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import net.dv8tion.jda.api.utils.data.SerializableData;
@@ -134,8 +135,9 @@ public class MessageEmbed implements SerializableData {
         this.videoInfo = videoInfo;
         this.footer = footer;
         this.image = image;
-        this.fields = fields != null && !fields.isEmpty()
-                ? Collections.unmodifiableList(fields) : Collections.emptyList();
+        this.fields = fields != null && !fields.isEmpty()? Collections.unmodifiableList(fields) : Collections.emptyList();
+        
+       
     }
 
     /**

@@ -37,7 +37,7 @@ public class Debug extends ListenerAdapter {
     }
 
     public static void buildJDAList(List<JDA> jdaList, ListenerAdapter la) throws Exception {
-        buildJDAList(jdaList, la, -1);
+        buildJDAList(jdaList, la, 2);
     }
 
     public static void buildJDAList(List<JDA> jdaList, ListenerAdapter la, int botCount) throws Exception {

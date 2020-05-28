@@ -830,8 +830,7 @@ public interface MessageChannel extends ISnowflake, Formattable
 
         JDAImpl jda = (JDAImpl) getJDA();
         Route.CompiledRoute route = Route.Messages.GET_MESSAGE.compile(getId(), messageId);
-        return new RestActionImpl<>(jda, route,
-            (response, request) -> jda.getEntityBuilder().createMessage(response.getObject(), MessageChannel.this, false));
+        return new RestActionImpl<>(jda, route,(response, request) -> jda.getEntityBuilder().createMessage(response.getObject(), MessageChannel.this, false));
     }
 
     /**
